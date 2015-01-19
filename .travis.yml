@@ -12,6 +12,9 @@ before_install:
   - go get github.com/axw/gocov/gocov
   - go get github.com/mattn/goveralls
   - go get golang.org/x/tools/cmd/cover
+  - go get github.com/akavel/rsrc/binutil
+  - go get github.com/akavel/rsrc/coff
+  - go get github.com/akavel/rsrc/ico
 
 script:
     - $HOME/gopath/bin/goveralls -repotoken lNZXr7UDQai10RBP6KAOqA6fRcs5NlKEe
