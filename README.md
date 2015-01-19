@@ -4,7 +4,7 @@ goversioninfo
 
 Golang Microsoft Version Info and Icon Resource Generator
 
-Package creates syso files with Version Info and Icon that the go build command will pick up and embed in your application. Fill in the versioninfo.json file and then use the code below to generate a .syso file. When you build, Go with AUTOMATICALLY find the file if is is in the same directory as your file with the main() function. Complete documentation available on [GoDoc](https://godoc.org/github.com/josephspurrier/goversioninfo).
+Package creates syso files with Version Info and Icon that the go build command will pick up and embed in your application. Fill in the versioninfo.json file and then use the code below to generate a .syso file. When you build, Go with automatically find the file if is is in the same directory as your file with the main() function. Complete documentation available on [GoDoc](https://godoc.org/github.com/josephspurrier/goversioninfo). Thanks to [Mateusz Czaplinski](https://github.com/akavel/rsrc) for his embedded binary resource package.
 
 ## Code
 
