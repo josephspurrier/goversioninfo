@@ -558,9 +558,8 @@ THE SOFTWARE.
 // *****************************************************************************
 
 const (
-	RT_ICON       = coff.RT_ICON
-	RT_GROUP_ICON = coff.RT_GROUP_ICON
-	RT_MANIFEST   = coff.RT_MANIFEST
+	rt_ICON       = coff.RT_ICON
+	rt_GROUP_ICON = coff.RT_GROUP_ICON
 )
 
 // on storing icons, see: http://blogs.msdn.com/b/oldnewthing/archive/2012/07/20/10331787.aspx
@@ -600,12 +599,11 @@ func addicon(coff *coff.Coff, fname string, newid <-chan uint16) error {
 		for _, icon := range icons {
 			id := <-newid
 			r := io.NewSectionReader(f, int64(icon.ImageOffset), int64(icon.BytesInRes))
-			coff.AddResource(RT_ICON, id, r)
+			coff.AddResource(rt_ICON, id, r)
 			group.Entries = append(group.Entries, gRPICONDIRENTRY{icon.IconDirEntryCommon, id})
 		}
 		id := <-newid
-		coff.AddResource(RT_GROUP_ICON, id, group)
-		//fmt.Println("Icon ", fname, " ID: ", id)
+		coff.AddResource(rt_GROUP_ICON, id, group)
 	}
 
 	return nil
