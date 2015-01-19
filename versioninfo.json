@@ -1,0 +1,44 @@
+{
+	"FixedFileInfo":
+	{
+		"FileVersion": {
+			"Major": 1,
+			"Minor": 0,
+			"Patch": 0,
+			"Build": 0
+		},
+		"ProductVersion": {
+			"Major": 1,
+			"Minor": 0,
+			"Patch": 0,
+			"Build": 0
+		},
+		"FileFlagsMask": "0b",
+		"FileFlags ": "00",
+		"FileOS": "04",
+		"FileType": "01",
+		"FileSubType": "00"
+	},
+	"StringFileInfo":
+	{
+		"Comments": "",
+		"CompanyName": "",
+		"FileDescription": "",
+		"FileVersion": "",
+		"InternalName": "",
+		"LegalCopyright": "",
+		"LegalTrademarks": "",
+		"OriginalFilename": "",
+		"PrivateBuild": "",
+		"ProductName": "",
+		"ProductVersion": "",
+		"SpecialBuild": ""
+	},
+	"VarFileInfo":
+	{
+		"Translation": {
+			"LangID": "0409",
+			"CharsetID": "04B0"
+		}
+	}
+}

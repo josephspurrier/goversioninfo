@@ -1,4 +1,4 @@
-goconsole
+goversioninfo
 ==========
 [![GoDoc](https://godoc.org/github.com/josephspurrier/goversioninfo?status.svg)](https://godoc.org/github.com/josephspurrier/versioninfo)
 
