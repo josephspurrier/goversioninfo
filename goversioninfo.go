@@ -19,8 +19,8 @@ import (
 	"os"
 	"reflect"
 	"strconv"
-	"syscall"
-	"time"
+	//"syscall"
+	//"time"
 )
 
 // *****************************************************************************
@@ -487,11 +487,11 @@ func buildFixedFileInfo(vi *VersionInfo) VS_FixedFileInfo {
 	ff.DwFileSubtype = str2Uint32(vi.FixedFileInfo.FileSubType)
 
 	// According to the spec, these should be zero...ugh
-	if vi.Timestamp {
+	/*if vi.Timestamp {
 		now := syscall.NsecToFiletime(time.Now().UnixNano())
 		ff.DwFileDateMS = now.HighDateTime
 		ff.DwFileDateLS = now.LowDateTime
-	}
+	}*/
 
 	return ff
 }
