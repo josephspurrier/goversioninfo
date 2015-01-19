@@ -10,7 +10,7 @@ Package creates syso files with Version Info and Icon that the go build command 
 
 Make a copy of versioninfo.json and copy it into your working directory. Fill in all the values and then use the code below.
 
-```
+~~~ go
 package main
 
 import (
@@ -44,16 +44,16 @@ func main() {
 		fmt.Println("Could not parse the .json file")
 	}
 }
-```
+~~~ go
 
-## Add an icon
+## Adding an icon
 
 To add an icon as a resource in the syso file, set Icon to true and set IconPath to the name of the icon to embed. If the icon has multiple sizes, all of the sizes will be embedded.
 
-```
+~~~ go
 // Enable icon embeddeding
 vi.Icon = true
 
 // Path to icon (same directory)
 vi.IconPath = "icon.ico"
-```
+~~~ go
