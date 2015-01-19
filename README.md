@@ -44,7 +44,7 @@ func main() {
 		fmt.Println("Could not parse the .json file")
 	}
 }
-~~~ go
+~~~
 
 ## Adding an icon
 
@@ -56,4 +56,4 @@ vi.Icon = true
 
 // Path to icon (same directory)
 vi.IconPath = "icon.ico"
-~~~ go
+~~~
