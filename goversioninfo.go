@@ -200,10 +200,10 @@ func (v *VersionInfo) WriteSyso(filename string) {
 
 	// Create a new RSRC section
 	coff := coff.NewRSRC()
-	id := <-newid
+	//id := <-newid
 
 	// ID 16 is for Version Information
-	coff.AddResource(16, id, sizedReader{&v.Buffer})
+	coff.AddResource(16, 1, sizedReader{&v.Buffer})
 
 	// If icon is enabled
 	if v.Icon {
@@ -564,16 +564,16 @@ const (
 )
 
 // on storing icons, see: http://blogs.msdn.com/b/oldnewthing/archive/2012/07/20/10331787.aspx
-type GRPICONDIR struct {
+type gRPICONDIR struct {
 	ico.ICONDIR
-	Entries []GRPICONDIRENTRY
+	Entries []gRPICONDIRENTRY
 }
 
-func (group GRPICONDIR) Size() int64 {
+func (group gRPICONDIR) Size() int64 {
 	return int64(binary.Size(group.ICONDIR) + len(group.Entries)*binary.Size(group.Entries[0]))
 }
 
-type GRPICONDIRENTRY struct {
+type gRPICONDIRENTRY struct {
 	ico.IconDirEntryCommon
 	Id uint16
 }
@@ -592,7 +592,7 @@ func addicon(coff *coff.Coff, fname string, newid <-chan uint16) error {
 
 	if len(icons) > 0 {
 		// RT_ICONs
-		group := GRPICONDIR{ICONDIR: ico.ICONDIR{
+		group := gRPICONDIR{ICONDIR: ico.ICONDIR{
 			Reserved: 0, // magic num.
 			Type:     1, // magic num.
 			Count:    uint16(len(icons)),
@@ -601,7 +601,7 @@ func addicon(coff *coff.Coff, fname string, newid <-chan uint16) error {
 			id := <-newid
 			r := io.NewSectionReader(f, int64(icon.ImageOffset), int64(icon.BytesInRes))
 			coff.AddResource(RT_ICON, id, r)
-			group.Entries = append(group.Entries, GRPICONDIRENTRY{icon.IconDirEntryCommon, id})
+			group.Entries = append(group.Entries, gRPICONDIRENTRY{icon.IconDirEntryCommon, id})
 		}
 		id := <-newid
 		coff.AddResource(RT_GROUP_ICON, id, group)
