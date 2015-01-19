@@ -1,10 +1,10 @@
 goversioninfo
 ==========
-[![GoDoc](https://godoc.org/github.com/josephspurrier/goversioninfo?status.svg)](https://godoc.org/github.com/josephspurrier/versioninfo)
+[![Build Status](https://travis-ci.org/josephspurrier/goversioninfo.svg)](https://travis-ci.org/josephspurrier/goversioninfo) [![Coverage Status](https://coveralls.io/repos/josephspurrier/goversioninfo/badge.png)](https://coveralls.io/r/josephspurrier/goversioninfo) [![GoDoc](https://godoc.org/github.com/josephspurrier/goversioninfo?status.svg)](https://godoc.org/github.com/josephspurrier/goversioninfo)
 
 Golang Microsoft Version Info and Icon Resource Generator
 
-Package creates syso files with Version Info and Icon that the go build command will pick up and embed in your application. Fill in the versioninfo.json file and then use the code below to generate a .syso file. When you build, Go with AUTOMATICALLY find the file if is is in the same directory as your file with the main() function. Complete documentation available on [GoDoc](https://godoc.org/github.com/josephspurrier/versioninfo).
+Package creates syso files with Version Info and Icon that the go build command will pick up and embed in your application. Fill in the versioninfo.json file and then use the code below to generate a .syso file. When you build, Go with AUTOMATICALLY find the file if is is in the same directory as your file with the main() function. Complete documentation available on [GoDoc](https://godoc.org/github.com/josephspurrier/goversioninfo).
 
 ## Code
 
