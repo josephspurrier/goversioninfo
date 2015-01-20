@@ -46,6 +46,11 @@ func main() {
 	flagTranslation := flag.Int("translation", 0, "translation ID")
 	flagCharset := flag.Int("charset", 0, "charset ID")
 
+	flagVerMajor := flag.Int("ver-major", -1, "FileVersion.Major")
+	flagVerMinor := flag.Int("ver-minor", -1, "FileVersion.Minor")
+	flagVerPatch := flag.Int("ver-patch", -1, "FileVersion.Patch")
+	flagVerBuild := flag.Int("ver-build", -1, "FileVersion.Build")
+
 	flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, "Usage: %s [flags] <versioninfo.json>\n\nPossible flags:\n", os.Args[0])
 		flag.PrintDefaults()
@@ -129,6 +134,19 @@ func main() {
 	}
 	if *flagCharset > 0 {
 		vi.VarFileInfo.Translation.CharsetID = goversioninfo.CharsetID(*flagCharset)
+	}
+
+	if *flagVerMajor >= 0 {
+		vi.FixedFileInfo.FileVersion.Major = *flagVerMajor
+	}
+	if *flagVerMinor >= 0 {
+		vi.FixedFileInfo.FileVersion.Minor = *flagVerMinor
+	}
+	if *flagVerPatch >= 0 {
+		vi.FixedFileInfo.FileVersion.Patch = *flagVerPatch
+	}
+	if *flagVerBuild >= 0 {
+		vi.FixedFileInfo.FileVersion.Build = *flagVerBuild
 	}
 
 	// Fill the structures with config data
