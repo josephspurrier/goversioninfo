@@ -27,8 +27,25 @@ import (
 )
 
 func main() {
-	flagOut := flag.String("o", "resource.syso", "output file name")
 	flagExample := flag.Bool("example", false, "just dump out an example versioninfo.json to stdout")
+	flagOut := flag.String("o", "resource.syso", "output file name")
+
+	flagComment := flag.String("comment", "", "StringFileInfo.Comments")
+	flagCompany := flag.String("company", "", "StringFileInfo.CompanyName")
+	flagDescription := flag.String("description", "", "StringFileInfo.FileDescription")
+	flagFileVersion := flag.String("file-version", "", "StringFileInfo.FileVersion")
+	flagInternalName := flag.String("internal-name", "", "StringFileInfo.InternalName")
+	flagCopyright := flag.String("copyright", "", "StringFileInfo.LegalCopyright")
+	flagTrademark := flag.String("trademark", "", "StringFileInfo.LegalTrademarks")
+	flagOriginalName := flag.String("original-name", "", "StringFileInfo.OriginalFilename")
+	flagPrivateBuild := flag.String("private-build", "", "StringFileInfo.PrivateBuild")
+	flagProductName := flag.String("product-name", "", "StringFileInfo.ProductName")
+	flagProductVersion := flag.String("product-version", "", "StringFileInfo.ProductVersion")
+	flagSpecialBuild := flag.String("special-build", "", "StringFileInfo.SpecialBuild")
+
+	flagTranslation := flag.Int("translation", 0, "translation ID")
+	flagCharset := flag.Int("charset", 0, "charset ID")
+
 	flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, "Usage: %s [flags] <versioninfo.json>\n\nPossible flags:\n", os.Args[0])
 		flag.PrintDefaults()
@@ -68,6 +85,52 @@ func main() {
 		log.Printf("Could not parse the .json file: %v", err)
 		os.Exit(2)
 	}
+
+	// Override from flags
+	if *flagComment != "" {
+		vi.StringFileInfo.Comments = *flagComment
+	}
+	if *flagCompany != "" {
+		vi.StringFileInfo.CompanyName = *flagCompany
+	}
+	if *flagDescription != "" {
+		vi.StringFileInfo.FileDescription = *flagDescription
+	}
+	if *flagFileVersion != "" {
+		vi.StringFileInfo.FileVersion = *flagFileVersion
+	}
+	if *flagInternalName != "" {
+		vi.StringFileInfo.InternalName = *flagInternalName
+	}
+	if *flagCopyright != "" {
+		vi.StringFileInfo.LegalCopyright = *flagCopyright
+	}
+	if *flagTrademark != "" {
+		vi.StringFileInfo.LegalTrademarks = *flagTrademark
+	}
+	if *flagOriginalName != "" {
+		vi.StringFileInfo.OriginalFilename = *flagOriginalName
+	}
+	if *flagPrivateBuild != "" {
+		vi.StringFileInfo.PrivateBuild = *flagPrivateBuild
+	}
+	if *flagProductName != "" {
+		vi.StringFileInfo.ProductName = *flagProductName
+	}
+	if *flagProductVersion != "" {
+		vi.StringFileInfo.ProductVersion = *flagProductVersion
+	}
+	if *flagSpecialBuild != "" {
+		vi.StringFileInfo.SpecialBuild = *flagSpecialBuild
+	}
+
+	if *flagTranslation > 0 {
+		vi.VarFileInfo.Translation.LangID = goversioninfo.LangID(*flagTranslation)
+	}
+	if *flagCharset > 0 {
+		vi.VarFileInfo.Translation.CharsetID = goversioninfo.CharsetID(*flagCharset)
+	}
+
 	// Fill the structures with config data
 	vi.Build()
 
