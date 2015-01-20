@@ -6,12 +6,9 @@ package goversioninfo
 
 import (
 	"encoding/binary"
-	"fmt"
 	"io"
 	"os"
-	"reflect"
 
-	"github.com/akavel/rsrc/binutil"
 	"github.com/akavel/rsrc/coff"
 	"github.com/akavel/rsrc/ico"
 )
@@ -91,40 +88,6 @@ func addIcon(coff *coff.Coff, fname string, newID <-chan uint16) error {
 		}
 		id := <-newID
 		coff.AddResource(rtGroupIcon, id, group)
-	}
-
-	return nil
-}
-
-func writeCoff(coff *coff.Coff, fnameout string) error {
-	out, err := os.Create(fnameout)
-	if err != nil {
-		return err
-	}
-	defer func() {
-		// close error is important
-		if closeErr := out.Close(); closeErr != nil && err == nil {
-			err = closeErr
-		}
-	}()
-	w := binutil.Writer{W: out}
-
-	// write the resulting file to disk
-	binutil.Walk(coff, func(v reflect.Value, path string) error {
-		if binutil.Plain(v.Kind()) {
-			w.WriteLE(v.Interface())
-			return nil
-		}
-		vv, ok := v.Interface().(binutil.SizedReader)
-		if ok {
-			w.WriteFromSized(vv)
-			return binutil.WALK_SKIP
-		}
-		return nil
-	})
-
-	if err = w.Err; err != nil {
-		return fmt.Errorf("Error writing %q file: %v", fnameout, w.Err)
 	}
 
 	return nil
