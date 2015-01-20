@@ -10,6 +10,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"reflect"
 	"strconv"
 
@@ -97,11 +98,12 @@ func (s sizedReader) Size() int64 {
 }
 
 func str2Uint32(s string) uint32 {
-	u, err := strconv.ParseUint(s, 16, 32)
 	if s == "" {
 		return 0
-	} else if err != nil {
-		fmt.Println("Error parsing uint32:", s, err)
+	}
+	u, err := strconv.ParseUint(s, 16, 32)
+	if err != nil {
+		log.Printf("Error parsing %q as uint32: %v", s, err)
 		return 0
 	}
 
@@ -215,35 +217,31 @@ func (vi *VersionInfo) WriteHex(filename string) error {
 type CharsetID uint16
 
 const (
-	// Cs7ASCII:	0	0000	7-bit ASCII
-	Cs7ASCII = CharsetID(0)
-	// CsJIS:	932	03A4	Japan (Shift ? JIS X-0208)
-	CsJIS = CharsetID(932)
-	// CsKSC:	949	03B5	Korea (Shift ? KSC 5601)
-	CsKSC = CharsetID(949)
-	// CsBig5:	950	03B6	Taiwan (Big5)
-	CsBig5 = CharsetID(950)
-	// CsUnicode:	1200	04B0	Unicode
-	CsUnicode = CharsetID(1200)
-	// CsLatin2:	1250	04E2	Latin-2 (Eastern European)
-	CsLatin2 = CharsetID(1250)
-	// CsCyrillic:	1251	04E3	Cyrillic
-	CsCyrillic = CharsetID(1251)
-	// CsMultilingual:	1252	04E4	Multilingual
-	CsMultilingual = CharsetID(1252)
-	// CsGreek:	1253	04E5	Greek
-	CsGreek = CharsetID(1253)
-	// CsTurkish:	1254	04E6	Turkish
-	CsTurkish = CharsetID(1254)
-	// CsHebrew:	1255	04E7	Hebrew
-	CsHebrew = CharsetID(1255)
-	// CsArabic:	1256	04E8	Arabic
-	CsArabic = CharsetID(1256)
+	Cs7ASCII       = CharsetID(0)    // Cs7ASCII:	0	0000	7-bit ASCII
+	CsJIS          = CharsetID(932)  // CsJIS:	932	03A4	Japan (Shift ? JIS X-0208)
+	CsKSC          = CharsetID(949)  // CsKSC:	949	03B5	Korea (Shift ? KSC 5601)
+	CsBig5         = CharsetID(950)  // CsBig5:	950	03B6	Taiwan (Big5)
+	CsUnicode      = CharsetID(1200) // CsUnicode:	1200	04B0	Unicode
+	CsLatin2       = CharsetID(1250) // CsLatin2:	1250	04E2	Latin-2 (Eastern European)
+	CsCyrillic     = CharsetID(1251) // CsCyrillic:	1251	04E3	Cyrillic
+	CsMultilingual = CharsetID(1252) // CsMultilingual:	1252	04E4	Multilingual
+	CsGreek        = CharsetID(1253) // CsGreek:	1253	04E5	Greek
+	CsTurkish      = CharsetID(1254) // CsTurkish:	1254	04E6	Turkish
+	CsHebrew       = CharsetID(1255) // CsHebrew:	1255	04E7	Hebrew
+	CsArabic       = CharsetID(1256) // CsArabic:	1256	04E8	Arabic
 )
 
 func (cs *CharsetID) UnmarshalJSON(p []byte) error {
+	if len(p) == 0 {
+		return nil
+	}
 	if p[0] != '"' {
-		return json.Unmarshal(p, cs)
+		var u uint16
+		if err := json.Unmarshal(p, &u); err != nil {
+			return err
+		}
+		*cs = CharsetID(u)
+		return nil
 	}
 	var s string
 	if err := json.Unmarshal(p, &s); err != nil {
@@ -260,8 +258,16 @@ func (cs *CharsetID) UnmarshalJSON(p []byte) error {
 type LangID uint16
 
 func (lng *LangID) UnmarshalJSON(p []byte) error {
+	if len(p) == 0 {
+		return nil
+	}
 	if p[0] != '"' {
-		return json.Unmarshal(p, lng)
+		var u uint16
+		if err := json.Unmarshal(p, &u); err != nil {
+			return err
+		}
+		*lng = LangID(u)
+		return nil
 	}
 	var s string
 	if err := json.Unmarshal(p, &s); err != nil {

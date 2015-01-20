@@ -362,3 +362,42 @@ func ExampleUseTimestamp() {
 		fmt.Println("Could not load "+file, err)
 	}
 }
+
+func TestStr2Uint32(t *testing.T) {
+	for _, tt := range []struct {
+		in  string
+		out uint32
+	}{{"0", 0}, {"", 0}, {"FFEF", 65519}} {
+		got := str2Uint32(tt.in)
+		if got != tt.out {
+			t.Errorf("%q: awaited %d, got %d.", tt.in, tt.out, got)
+		}
+	}
+}
+func TestLangID(t *testing.T) {
+	var lng LangID
+	for _, tt := range []struct {
+		in      string
+		needErr bool
+	}{{"", false}, {"A", true}, {"1", false}, {`"FfeF"`, false}} {
+		if err := lng.UnmarshalJSON([]byte(tt.in)); tt.needErr && err == nil {
+			t.Errorf("%q: needed error, got nil.", tt.in)
+		} else if !tt.needErr && err != nil {
+			t.Errorf("%q: got error: %v", tt.in, err)
+		}
+	}
+}
+
+func TestCharsetID(t *testing.T) {
+	var cs CharsetID
+	for _, tt := range []struct {
+		in      string
+		needErr bool
+	}{{"", false}, {"A", true}, {"1", false}, {`"FfeF"`, false}} {
+		if err := cs.UnmarshalJSON([]byte(tt.in)); tt.needErr && err == nil {
+			t.Errorf("%q: needed error, got nil.", tt.in)
+		} else if !tt.needErr && err != nil {
+			t.Errorf("%q: got error: %v", tt.in, err)
+		}
+	}
+}
