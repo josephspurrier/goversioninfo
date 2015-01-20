@@ -40,6 +40,6 @@ func logic() {
 
 	// Create the file
 	if err := vi.WriteSyso("resource.syso"); err != nil {
-		fmt.Println("Could not write resource.syso: %v", err)
+		fmt.Printf("Could not write resource.syso: %v", err)
 	}
 }

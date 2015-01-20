@@ -17,6 +17,8 @@ package main
 
 import (
 	"flag"
+	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
 	"os"
@@ -26,15 +28,33 @@ import (
 
 func main() {
 	flagOut := flag.String("o", "resource.syso", "output file name")
+	flagExample := flag.Bool("example", false, "just dump out an example versioninfo.json to stdout")
+	flag.Usage = func() {
+		fmt.Fprintf(os.Stderr, "Usage: %s [flags] <versioninfo.json>\n\nPossible flags:\n", os.Args[0])
+		flag.PrintDefaults()
+	}
 	flag.Parse()
+	if *flagExample {
+		io.WriteString(os.Stdout, example)
+		return
+	}
 
 	configFile := flag.Arg(0)
 	if configFile == "" {
 		configFile = "versioninfo.json"
 	}
+	var err error
+	var input = io.ReadCloser(os.Stdin)
+	if configFile != "-" {
+		if input, err = os.Open(configFile); err != nil {
+			log.Printf("Cannot open %q: %v", configFile, err)
+			os.Exit(1)
+		}
+	}
 
 	// Read the config file
-	jsonBytes, err := ioutil.ReadFile(configFile)
+	jsonBytes, err := ioutil.ReadAll(input)
+	input.Close()
 	if err != nil {
 		log.Printf("Error reading %q: %v", configFile, err)
 		os.Exit(1)
@@ -55,5 +75,50 @@ func main() {
 	vi.Walk()
 
 	// Create the file
-	vi.WriteSyso(*flagOut)
+	if err := vi.WriteSyso(*flagOut); err != nil {
+		log.Printf("Error writing syso: %v", err)
+		os.Exit(3)
+	}
 }
+
+const example = `{
+	"FixedFileInfo": {
+		"FileVersion": {
+			"Major": 6,
+			"Minor": 3,
+			"Patch": 9600,
+			"Build": 17284
+		},
+		"ProductVersion": {
+			"Major": 6,
+			"Minor": 3,
+			"Patch": 9600,
+			"Build": 17284
+		},
+		"FileFlagsMask": "3f",
+		"FileFlags ": "00",
+		"FileOS": "040004",
+		"FileType": "01",
+		"FileSubType": "00"
+	},
+	"StringFileInfo": {
+		"Comments": "",
+		"CompanyName": "Joseph Spurrier Ltd.",
+		"FileDescription": "",
+		"FileVersion": "6.3.9600.17284 (aaa.140822-1915)",
+		"InternalName": "goversioninfo",
+		"LegalCopyright": "© Joseph Spurrier. Licensed under the Apache License, Version 2.0",
+		"LegalTrademarks": "",
+		"OriginalFilename": "goversioninfo",
+		"PrivateBuild": "",
+		"ProductName": "Go Version Info",
+		"ProductVersion": "6.3.9600.17284",
+		"SpecialBuild": ""
+	},
+	"VarFileInfo": {
+		"Translation": {
+			"LangID": "0409",
+			"CharsetID": "04B0"
+		}
+	}
+}`

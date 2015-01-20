@@ -2,8 +2,7 @@
 // Author: Joseph Spurrier (http://josephspurrier.com)
 // License: http://www.apache.org/licenses/LICENSE-2.0.html
 
-// Package main_test performs testing on main package
-package goversioninfo_test
+package goversioninfo
 
 import (
 	"bytes"
@@ -12,8 +11,6 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
-
-	"github.com/josephspurrier/goversioninfo"
 )
 
 // *****************************************************************************
@@ -35,7 +32,7 @@ func testFile(t *testing.T, filename string) {
 	}
 
 	// Create a new container
-	vi := &goversioninfo.VersionInfo{}
+	vi := &VersionInfo{}
 
 	// Parse the config
 	if err := vi.ParseJSON(jsonBytes); err != nil {
@@ -70,7 +67,7 @@ func TestWrite(t *testing.T) {
 	}
 
 	// Create a new container
-	vi := &goversioninfo.VersionInfo{}
+	vi := &VersionInfo{}
 
 	// Parse the config
 	if err := vi.ParseJSON(jsonBytes); err != nil {
@@ -105,7 +102,7 @@ func TestMalformedJSON(t *testing.T) {
 	}
 
 	// Create a new container
-	vi := &goversioninfo.VersionInfo{}
+	vi := &VersionInfo{}
 
 	// Parse the config and return false
 	if err := vi.ParseJSON(jsonBytes); err == nil {
@@ -124,7 +121,7 @@ func TestIcon(t *testing.T) {
 	}
 
 	// Create a new container
-	vi := &goversioninfo.VersionInfo{}
+	vi := &VersionInfo{}
 
 	// Parse the config
 	if err := vi.ParseJSON(jsonBytes); err != nil {
@@ -164,7 +161,7 @@ func TestBadIcon(t *testing.T) {
 	}
 
 	// Create a new container
-	vi := &goversioninfo.VersionInfo{}
+	vi := &VersionInfo{}
 
 	// Parse the config
 	if err := vi.ParseJSON(jsonBytes); err != nil {
@@ -203,7 +200,7 @@ func TestTimestamp(t *testing.T) {
 	}
 
 	// Create a new container
-	vi := &goversioninfo.VersionInfo{}
+	vi := &VersionInfo{}
 
 	// Parse the config
 	if err := vi.ParseJSON(jsonBytes); err != nil {
@@ -241,7 +238,7 @@ func TestVersionString(t *testing.T) {
 	}
 
 	// Create a new container
-	vi := &goversioninfo.VersionInfo{}
+	vi := &VersionInfo{}
 
 	// Parse the config
 	if err := vi.ParseJSON(jsonBytes); err != nil {
@@ -263,7 +260,7 @@ func TestWriteHex(t *testing.T) {
 	}
 
 	// Create a new container
-	vi := &goversioninfo.VersionInfo{}
+	vi := &VersionInfo{}
 
 	// Parse the config
 	if err := vi.ParseJSON(jsonBytes); err != nil {
@@ -302,7 +299,7 @@ func ExampleUseIcon() {
 	}
 
 	// Create a new container
-	vi := &goversioninfo.VersionInfo{}
+	vi := &VersionInfo{}
 
 	// Parse the config
 	if err := vi.ParseJSON(jsonBytes); err != nil {
@@ -340,7 +337,7 @@ func ExampleUseTimestamp() {
 	}
 
 	// Create a new container
-	vi := &goversioninfo.VersionInfo{}
+	vi := &VersionInfo{}
 
 	// Parse the config
 	if err := vi.ParseJSON(jsonBytes); err != nil {
