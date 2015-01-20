@@ -6,8 +6,9 @@ package goversioninfo_test
 
 import (
 	"fmt"
-	"github.com/josephspurrier/goversioninfo"
 	"io/ioutil"
+
+	"github.com/josephspurrier/goversioninfo"
 )
 
 // Example
@@ -28,16 +29,17 @@ func logic() {
 	vi := &goversioninfo.VersionInfo{}
 
 	// Parse the config
-	if ok := vi.ParseJSON(jsonBytes); ok {
-		// Fill the structures with config data
-		vi.Build()
-
-		// Write the data to a buffer
-		vi.Walk()
-
-		// Create the file
-		vi.WriteSyso("resource.syso")
-	} else {
+	if err := vi.ParseJSON(jsonBytes); err != nil {
 		fmt.Println("Could not parse the .json file")
+	}
+	// Fill the structures with config data
+	vi.Build()
+
+	// Write the data to a buffer
+	vi.Walk()
+
+	// Create the file
+	if err := vi.WriteSyso("resource.syso"); err != nil {
+		fmt.Println("Could not write resource.syso: %v", err)
 	}
 }

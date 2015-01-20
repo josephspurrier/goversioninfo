@@ -8,11 +8,12 @@ package goversioninfo_test
 import (
 	"bytes"
 	"fmt"
-	"github.com/josephspurrier/goversioninfo"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
+
+	"github.com/josephspurrier/goversioninfo"
 )
 
 // *****************************************************************************
@@ -37,25 +38,24 @@ func testFile(t *testing.T, filename string) {
 	vi := &goversioninfo.VersionInfo{}
 
 	// Parse the config
-	if ok := vi.ParseJSON(jsonBytes); ok {
-		// Fill the structures with config data
-		vi.Build()
-
-		// Write the data to a buffer
-		vi.Walk()
-
-		path2, _ := filepath.Abs("./tests/" + filename + ".hex")
-
-		expected, err := ioutil.ReadFile(path2)
-		if err != nil {
-			t.Error("Could not load "+filename+".hex", err)
-		}
-
-		if !bytes.Equal(vi.Buffer.Bytes(), expected) {
-			t.Error("Data does not match " + filename + ".hex")
-		}
-	} else {
+	if err := vi.ParseJSON(jsonBytes); err != nil {
 		t.Error("Could not parse "+filename+".json", err)
+	}
+	// Fill the structures with config data
+	vi.Build()
+
+	// Write the data to a buffer
+	vi.Walk()
+
+	path2, _ := filepath.Abs("./tests/" + filename + ".hex")
+
+	expected, err := ioutil.ReadFile(path2)
+	if err != nil {
+		t.Error("Could not load "+filename+".hex", err)
+	}
+
+	if !bytes.Equal(vi.Buffer.Bytes(), expected) {
+		t.Error("Data does not match " + filename + ".hex")
 	}
 }
 
@@ -73,25 +73,24 @@ func TestWrite(t *testing.T) {
 	vi := &goversioninfo.VersionInfo{}
 
 	// Parse the config
-	if ok := vi.ParseJSON(jsonBytes); ok {
-		// Fill the structures with config data
-		vi.Build()
-
-		// Write the data to a buffer
-		vi.Walk()
-
-		file := "resource.syso"
-
-		vi.WriteSyso(file)
-
-		_, err = ioutil.ReadFile(file)
-		if err != nil {
-			t.Error("Could not load "+file, err)
-		} else {
-			os.Remove(file)
-		}
-	} else {
+	if err := vi.ParseJSON(jsonBytes); err != nil {
 		t.Error("Could not parse "+filename+".json", err)
+	}
+	// Fill the structures with config data
+	vi.Build()
+
+	// Write the data to a buffer
+	vi.Walk()
+
+	file := "resource.syso"
+
+	vi.WriteSyso(file)
+
+	_, err = ioutil.ReadFile(file)
+	if err != nil {
+		t.Error("Could not load "+file, err)
+	} else {
+		os.Remove(file)
 	}
 }
 
@@ -109,8 +108,8 @@ func TestMalformedJSON(t *testing.T) {
 	vi := &goversioninfo.VersionInfo{}
 
 	// Parse the config and return false
-	if ok := vi.ParseJSON(jsonBytes); ok {
-		t.Error("Application was supposed to return false", err)
+	if err := vi.ParseJSON(jsonBytes); err == nil {
+		t.Error("Application was supposed to return error, got nil")
 	}
 }
 
@@ -128,30 +127,29 @@ func TestIcon(t *testing.T) {
 	vi := &goversioninfo.VersionInfo{}
 
 	// Parse the config
-	if ok := vi.ParseJSON(jsonBytes); ok {
-
-		vi.Icon = true
-
-		vi.IconPath = "icon.ico"
-
-		// Fill the structures with config data
-		vi.Build()
-
-		// Write the data to a buffer
-		vi.Walk()
-
-		file := "resource.syso"
-
-		vi.WriteSyso(file)
-
-		_, err = ioutil.ReadFile(file)
-		if err != nil {
-			t.Error("Could not load "+file, err)
-		} else {
-			os.Remove(file)
-		}
-	} else {
+	if err := vi.ParseJSON(jsonBytes); err != nil {
 		t.Error("Could not parse "+filename+".json", err)
+	}
+
+	vi.Icon = true
+
+	vi.IconPath = "icon.ico"
+
+	// Fill the structures with config data
+	vi.Build()
+
+	// Write the data to a buffer
+	vi.Walk()
+
+	file := "resource.syso"
+
+	vi.WriteSyso(file)
+
+	_, err = ioutil.ReadFile(file)
+	if err != nil {
+		t.Error("Could not load "+file, err)
+	} else {
+		os.Remove(file)
 	}
 }
 
@@ -169,29 +167,28 @@ func TestBadIcon(t *testing.T) {
 	vi := &goversioninfo.VersionInfo{}
 
 	// Parse the config
-	if ok := vi.ParseJSON(jsonBytes); ok {
-
-		vi.Icon = true
-		vi.IconPath = "icon2.ico"
-
-		// Fill the structures with config data
-		vi.Build()
-
-		// Write the data to a buffer
-		vi.Walk()
-
-		file := "resource.syso"
-
-		vi.WriteSyso(file)
-
-		_, err = ioutil.ReadFile(file)
-		if err != nil {
-			os.Remove(file)
-		} else {
-			t.Error("File should not exist "+file, err)
-		}
-	} else {
+	if err := vi.ParseJSON(jsonBytes); err != nil {
 		t.Error("Could not parse "+filename+".json", err)
+	}
+
+	vi.Icon = true
+	vi.IconPath = "icon2.ico"
+
+	// Fill the structures with config data
+	vi.Build()
+
+	// Write the data to a buffer
+	vi.Walk()
+
+	file := "resource.syso"
+
+	vi.WriteSyso(file)
+
+	_, err = ioutil.ReadFile(file)
+	if err != nil {
+		os.Remove(file)
+	} else {
+		t.Error("File should not exist "+file, err)
 	}
 }
 
@@ -209,28 +206,27 @@ func TestTimestamp(t *testing.T) {
 	vi := &goversioninfo.VersionInfo{}
 
 	// Parse the config
-	if ok := vi.ParseJSON(jsonBytes); ok {
-
-		vi.Timestamp = true
-
-		// Fill the structures with config data
-		vi.Build()
-
-		// Write the data to a buffer
-		vi.Walk()
-
-		file := "resource.syso"
-
-		vi.WriteSyso(file)
-
-		_, err = ioutil.ReadFile(file)
-		if err != nil {
-			t.Error("Could not load "+file, err)
-		} else {
-			os.Remove(file)
-		}
-	} else {
+	if err := vi.ParseJSON(jsonBytes); err != nil {
 		t.Error("Could not parse "+filename+".json", err)
+	}
+
+	vi.Timestamp = true
+
+	// Fill the structures with config data
+	vi.Build()
+
+	// Write the data to a buffer
+	vi.Walk()
+
+	file := "resource.syso"
+
+	vi.WriteSyso(file)
+
+	_, err = ioutil.ReadFile(file)
+	if err != nil {
+		t.Error("Could not load "+file, err)
+	} else {
+		os.Remove(file)
 	}
 }
 
@@ -248,12 +244,11 @@ func TestVersionString(t *testing.T) {
 	vi := &goversioninfo.VersionInfo{}
 
 	// Parse the config
-	if ok := vi.ParseJSON(jsonBytes); ok {
-		if vi.FixedFileInfo.GetVersionString() != "6.3.9600.16384" {
-			t.Errorf("Version String does not match: %v", vi.FixedFileInfo.GetVersionString())
-		}
-	} else {
+	if err := vi.ParseJSON(jsonBytes); err != nil {
 		t.Error("Could not parse "+filename+".json", err)
+	}
+	if vi.FixedFileInfo.GetVersionString() != "6.3.9600.16384" {
+		t.Errorf("Version String does not match: %v", vi.FixedFileInfo.GetVersionString())
 	}
 }
 
@@ -271,25 +266,24 @@ func TestWriteHex(t *testing.T) {
 	vi := &goversioninfo.VersionInfo{}
 
 	// Parse the config
-	if ok := vi.ParseJSON(jsonBytes); ok {
-		// Fill the structures with config data
-		vi.Build()
-
-		// Write the data to a buffer
-		vi.Walk()
-
-		file := "resource.syso"
-
-		vi.WriteHex(file)
-
-		_, err = ioutil.ReadFile(file)
-		if err != nil {
-			t.Error("Could not load "+file, err)
-		} else {
-			os.Remove(file)
-		}
-	} else {
+	if err := vi.ParseJSON(jsonBytes); err != nil {
 		t.Error("Could not parse "+filename+".json", err)
+	}
+	// Fill the structures with config data
+	vi.Build()
+
+	// Write the data to a buffer
+	vi.Walk()
+
+	file := "resource.syso"
+
+	vi.WriteHex(file)
+
+	_, err = ioutil.ReadFile(file)
+	if err != nil {
+		t.Error("Could not load "+file, err)
+	} else {
+		os.Remove(file)
 	}
 }
 
@@ -311,28 +305,27 @@ func ExampleUseIcon() {
 	vi := &goversioninfo.VersionInfo{}
 
 	// Parse the config
-	if ok := vi.ParseJSON(jsonBytes); ok {
-
-		vi.Icon = true
-
-		vi.IconPath = "icon.ico"
-
-		// Fill the structures with config data
-		vi.Build()
-
-		// Write the data to a buffer
-		vi.Walk()
-
-		file := "resource.syso"
-
-		vi.WriteSyso(file)
-
-		_, err = ioutil.ReadFile(file)
-		if err != nil {
-			fmt.Println("Could not load "+file, err)
-		}
-	} else {
+	if err := vi.ParseJSON(jsonBytes); err != nil {
 		fmt.Println("Could not parse "+filename+".json", err)
+	}
+
+	vi.Icon = true
+
+	vi.IconPath = "icon.ico"
+
+	// Fill the structures with config data
+	vi.Build()
+
+	// Write the data to a buffer
+	vi.Walk()
+
+	file := "resource.syso"
+
+	vi.WriteSyso(file)
+
+	_, err = ioutil.ReadFile(file)
+	if err != nil {
+		fmt.Println("Could not load "+file, err)
 	}
 }
 
@@ -350,26 +343,25 @@ func ExampleUseTimestamp() {
 	vi := &goversioninfo.VersionInfo{}
 
 	// Parse the config
-	if ok := vi.ParseJSON(jsonBytes); ok {
-
-		// Write a timestamp even though it is against the spec
-		vi.Timestamp = true
-
-		// Fill the structures with config data
-		vi.Build()
-
-		// Write the data to a buffer
-		vi.Walk()
-
-		file := "resource.syso"
-
-		vi.WriteSyso(file)
-
-		_, err = ioutil.ReadFile(file)
-		if err != nil {
-			fmt.Println("Could not load "+file, err)
-		}
-	} else {
+	if err := vi.ParseJSON(jsonBytes); err != nil {
 		fmt.Println("Could not parse "+filename+".json", err)
+	}
+
+	// Write a timestamp even though it is against the spec
+	vi.Timestamp = true
+
+	// Fill the structures with config data
+	vi.Build()
+
+	// Write the data to a buffer
+	vi.Walk()
+
+	file := "resource.syso"
+
+	vi.WriteSyso(file)
+
+	_, err = ioutil.ReadFile(file)
+	if err != nil {
+		fmt.Println("Could not load "+file, err)
 	}
 }

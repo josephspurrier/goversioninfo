@@ -10,9 +10,6 @@ import (
 	"encoding/binary"
 	"encoding/json"
 	"fmt"
-	"github.com/akavel/rsrc/binutil"
-	"github.com/akavel/rsrc/coff"
-	"github.com/akavel/rsrc/ico"
 	"io"
 	"io/ioutil"
 	"math"
@@ -21,6 +18,10 @@ import (
 	"strconv"
 	//"syscall"
 	//"time"
+
+	"github.com/akavel/rsrc/binutil"
+	"github.com/akavel/rsrc/coff"
+	"github.com/akavel/rsrc/ico"
 )
 
 // *****************************************************************************
@@ -28,13 +29,8 @@ import (
 // *****************************************************************************
 
 // Parse JSON file to structs
-func (vi *VersionInfo) ParseJSON(jsonBytes []byte) bool {
-	if err := json.Unmarshal([]byte(jsonBytes), &vi); err != nil {
-		fmt.Println("ParseJSON Error:", err)
-		return false
-	}
-
-	return true
+func (vi *VersionInfo) ParseJSON(jsonBytes []byte) error {
+	return json.Unmarshal([]byte(jsonBytes), &vi)
 }
 
 // Version Info data container
@@ -188,7 +184,7 @@ func (v *VersionInfo) Walk() {
 }
 
 // WriteSyso creates a resource file from the version info and optionally an icon
-func (v *VersionInfo) WriteSyso(filename string) {
+func (v *VersionInfo) WriteSyso(filename string) error {
 
 	// Channel for generating IDs
 	newid := make(chan uint16)
@@ -207,27 +203,20 @@ func (v *VersionInfo) WriteSyso(filename string) {
 
 	// If icon is enabled
 	if v.Icon {
-		err := addicon(coff, v.IconPath, newid)
-		if err != nil {
-			//return err
-			fmt.Println("Error adding icon:", err)
-			return
+		if err := addicon(coff, v.IconPath, newid); err != nil {
+			return err
 		}
 	}
 
 	coff.Freeze()
 
 	// Write to file
-	err := writeCoff(coff, filename)
-	if err != nil {
-		fmt.Printf("error writing %s coff/.syso: %v\n", err)
-		return
-	}
+	return writeCoff(coff, filename)
 }
 
 // WriteHex creates a hex file for debugging version info
-func (v *VersionInfo) WriteHex(filename string) {
-	ioutil.WriteFile(filename, v.Buffer.Bytes(), 0655)
+func (v *VersionInfo) WriteHex(filename string) error {
+	return ioutil.WriteFile(filename, v.Buffer.Bytes(), 0655)
 }
 
 // *****************************************************************************
@@ -614,7 +603,12 @@ func writeCoff(coff *coff.Coff, fnameout string) error {
 	if err != nil {
 		return err
 	}
-	defer out.Close()
+	defer func() {
+		// close error is important
+		if closeErr := out.Close(); closeErr != nil && err == nil {
+			err = closeErr
+		}
+	}()
 	w := binutil.Writer{W: out}
 
 	// write the resulting file to disk
@@ -631,8 +625,8 @@ func writeCoff(coff *coff.Coff, fnameout string) error {
 		return nil
 	})
 
-	if w.Err != nil {
-		return fmt.Errorf("Error writing output file: %s", w.Err)
+	if err = w.Err; err != nil {
+		return fmt.Errorf("Error writing %q file: %v", fnameout, w.Err)
 	}
 
 	return nil
