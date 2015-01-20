@@ -2,13 +2,11 @@
 // Author: Joseph Spurrier (http://josephspurrier.com)
 // License: http://www.apache.org/licenses/LICENSE-2.0.html
 
-package goversioninfo_test
+package goversioninfo
 
 import (
 	"fmt"
 	"io/ioutil"
-
-	"github.com/josephspurrier/goversioninfo"
 )
 
 // Example
@@ -26,7 +24,7 @@ func logic() {
 	}
 
 	// Create a new container
-	vi := &goversioninfo.VersionInfo{}
+	vi := &VersionInfo{}
 
 	// Parse the config
 	if err := vi.ParseJSON(jsonBytes); err != nil {
