@@ -5,8 +5,9 @@
 package goversioninfo
 
 import (
-	"fmt"
 	"io/ioutil"
+	"log"
+	"os"
 )
 
 // Example
@@ -19,12 +20,12 @@ func logic() {
 	// Read the config file
 	jsonBytes, err := ioutil.ReadFile("versioninfo.json")
 	if err != nil {
-		log.Printf("Error reading %q: %v", configFile, err)
+		log.Printf("Error reading versioninfo.json: %v", err)
 		os.Exit(1)
 	}
 
 	// Create a new container
-	vi := &goversioninfo.VersionInfo{}
+	vi := &VersionInfo{}
 
 	// Parse the config
 	if err := vi.ParseJSON(jsonBytes); err != nil {
