@@ -7,8 +7,6 @@ package goversioninfo
 import (
 	"fmt"
 	"io/ioutil"
-
-	"github.com/josephspurrier/goversioninfo"
 )
 
 // Example
