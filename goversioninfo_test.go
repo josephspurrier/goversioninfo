@@ -131,8 +131,6 @@ func TestIcon(t *testing.T) {
 		t.Error("Could not parse "+filename+".json", err)
 	}
 
-	vi.Icon = true
-
 	vi.IconPath = "icon.ico"
 
 	// Fill the structures with config data
@@ -171,7 +169,6 @@ func TestBadIcon(t *testing.T) {
 		t.Error("Could not parse "+filename+".json", err)
 	}
 
-	vi.Icon = true
 	vi.IconPath = "icon2.ico"
 
 	// Fill the structures with config data
@@ -308,8 +305,6 @@ func ExampleUseIcon() {
 	if err := vi.ParseJSON(jsonBytes); err != nil {
 		fmt.Println("Could not parse "+filename+".json", err)
 	}
-
-	vi.Icon = true
 
 	vi.IconPath = "icon.ico"
 

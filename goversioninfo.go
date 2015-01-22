@@ -2,7 +2,7 @@
 // Author: Joseph Spurrier (http://josephspurrier.com)
 // License: http://www.apache.org/licenses/LICENSE-2.0.html
 
-// Package goversioninfo create syso files with Microsoft Version Information embedded.
+// Package goversioninfo creates a syso file which contains Microsoft Version Information and an optional icon.
 package goversioninfo
 
 import (
@@ -36,15 +36,14 @@ type VersionInfo struct {
 	VarFileInfo    `json:"VarFileInfo"`
 	Timestamp      bool
 	Buffer         bytes.Buffer
-	Structure      VS_VersionInfo
-	Icon           bool
+	Structure      VSVersionInfo
 	IconPath       string
 }
 
 // Translation with langid and charsetid.
 type Translation struct {
-	LangID    LangID
-	CharsetID CharsetID
+	LangID    `json:"LangID"`
+	CharsetID `json:"CharsetID"`
 }
 
 // FileVersion with 3 parts.
@@ -157,7 +156,7 @@ func (t Translation) getTranslation() string {
 // IO Methods
 // *****************************************************************************
 
-// Walk fills the data buffer with hexidecimal data from the structs
+// Walk writes the data buffer with hexidecimal data from the structs
 func (vi *VersionInfo) Walk() {
 	// Create a buffer
 	var b bytes.Buffer
@@ -193,13 +192,12 @@ func (vi *VersionInfo) WriteSyso(filename string) error {
 
 	// Create a new RSRC section
 	coff := coff.NewRSRC()
-	//id := <-newID
 
 	// ID 16 is for Version Information
 	coff.AddResource(16, 1, sizedReader{&vi.Buffer})
 
 	// If icon is enabled
-	if vi.Icon {
+	if vi.IconPath != "" {
 		if err := addIcon(coff, vi.IconPath, newID); err != nil {
 			return err
 		}

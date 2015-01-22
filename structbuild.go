@@ -28,21 +28,21 @@ http://msdn.microsoft.com/en-us/library/windows/desktop/aa381058.aspx#charsetid
 
 */
 
-// VS_VersionInfo is the top level version container.
-type VS_VersionInfo struct {
+// VSVersionInfo is the top level version container.
+type VSVersionInfo struct {
 	WLength      uint16
 	WValueLength uint16
 	WType        uint16
 	SzKey        []byte
 	Padding1     []byte
-	Value        VS_FixedFileInfo
+	Value        VSFixedFileInfo
 	Padding2     []byte
-	Children     VS_StringFileInfo
-	Children2    VS_VarFileInfo
+	Children     VSStringFileInfo
+	Children2    VSVarFileInfo
 }
 
-// VS_FixedFileInfo - most of these should be left at the defaults.
-type VS_FixedFileInfo struct {
+// VSFixedFileInfo - most of these should be left at the defaults.
+type VSFixedFileInfo struct {
 	DwSignature        uint32
 	DwStrucVersion     uint32
 	DwFileVersionMS    uint32
@@ -58,29 +58,29 @@ type VS_FixedFileInfo struct {
 	DwFileDateLS       uint32
 }
 
-// VS_StringFileInfo holds multiple collections of keys and values,
+// VSStringFileInfo holds multiple collections of keys and values,
 // only allows for 1 collection in this package.
-type VS_StringFileInfo struct {
+type VSStringFileInfo struct {
 	WLength      uint16
 	WValueLength uint16
 	WType        uint16
 	SzKey        []byte
 	Padding      []byte
-	Children     VS_StringTable
+	Children     VSStringTable
 }
 
-// VS_StringTable holds a collection of string keys and values.
-type VS_StringTable struct {
+// VSStringTable holds a collection of string keys and values.
+type VSStringTable struct {
 	WLength      uint16
 	WValueLength uint16
 	WType        uint16
 	SzKey        []byte
 	Padding      []byte
-	Children     []VS_String
+	Children     []VSString
 }
 
-// VS_String holds the keys and values.
-type VS_String struct {
+// VSString holds the keys and values.
+type VSString struct {
 	WLength      uint16
 	WValueLength uint16
 	WType        uint16
@@ -90,18 +90,18 @@ type VS_String struct {
 	Padding2     []byte
 }
 
-// VS_VarFileInfo holds the translation collection of 1.
-type VS_VarFileInfo struct {
+// VSVarFileInfo holds the translation collection of 1.
+type VSVarFileInfo struct {
 	WLength      uint16
 	WValueLength uint16
 	WType        uint16
 	SzKey        []byte
 	Padding      []byte
-	Value        VS_Var
+	Value        VSVar
 }
 
-// VS_Var holds the translation key.
-type VS_Var struct {
+// VSVar holds the translation key.
+type VSVar struct {
 	WLength      uint16
 	WValueLength uint16
 	WType        uint16
@@ -110,11 +110,11 @@ type VS_Var struct {
 	Value        uint32
 }
 
-func buildString(i int, v reflect.Value) (VS_String, bool, uint16) {
+func buildString(i int, v reflect.Value) (VSString, bool, uint16) {
 	sValue := string(v.Field(i).Interface().(string))
 	sName := v.Type().Field(i).Name
 
-	ss := VS_String{}
+	ss := VSString{}
 
 	// If the value is set
 	if sValue != "" {
@@ -157,8 +157,8 @@ func buildString(i int, v reflect.Value) (VS_String, bool, uint16) {
 	return ss, false, 0
 }
 
-func buildStringTable(vi *VersionInfo) (VS_StringTable, uint16) {
-	st := VS_StringTable{}
+func buildStringTable(vi *VersionInfo) (VSStringTable, uint16) {
+	st := VSStringTable{}
 
 	// Always set to 0
 	st.WValueLength = 0x00
@@ -186,8 +186,8 @@ func buildStringTable(vi *VersionInfo) (VS_StringTable, uint16) {
 	return st, uint16(len(st.Padding))
 }
 
-func buildStringFileInfo(vi *VersionInfo) (VS_StringFileInfo, uint16) {
-	sf := VS_StringFileInfo{}
+func buildStringFileInfo(vi *VersionInfo) (VSStringFileInfo, uint16) {
+	sf := VSStringFileInfo{}
 
 	// Always set to 0
 	sf.WValueLength = 0x00
@@ -207,8 +207,8 @@ func buildStringFileInfo(vi *VersionInfo) (VS_StringFileInfo, uint16) {
 	return sf, extra
 }
 
-func buildVar(vfi VarFileInfo) VS_Var {
-	vs := VS_Var{}
+func buildVar(vfi VarFileInfo) VSVar {
+	vs := VSVar{}
 	// Create key
 	vs.SzKey = buildUnicode("Translation", false)
 	soFar := len(vs.SzKey) + 6
@@ -230,8 +230,8 @@ func buildVar(vfi VarFileInfo) VS_Var {
 	return vs
 }
 
-func buildVarFileInfo(vfi VarFileInfo) VS_VarFileInfo {
-	vf := VS_VarFileInfo{}
+func buildVarFileInfo(vfi VarFileInfo) VSVarFileInfo {
+	vf := VSVarFileInfo{}
 
 	// Always set to 0
 	vf.WValueLength = 0x00
@@ -251,8 +251,8 @@ func buildVarFileInfo(vfi VarFileInfo) VS_VarFileInfo {
 	return vf
 }
 
-func buildFixedFileInfo(vi *VersionInfo) VS_FixedFileInfo {
-	ff := VS_FixedFileInfo{}
+func buildFixedFileInfo(vi *VersionInfo) VSFixedFileInfo {
+	ff := VSFixedFileInfo{}
 	ff.DwSignature = 0xFEEF04BD
 	ff.DwStrucVersion = 0x00010000
 	ff.DwFileVersionMS = str2Uint32(vi.FixedFileInfo.FileVersion.getVersionHighString())
@@ -277,7 +277,7 @@ func buildFixedFileInfo(vi *VersionInfo) VS_FixedFileInfo {
 
 // Build fills the structs with data from the config file
 func (v *VersionInfo) Build() {
-	vi := VS_VersionInfo{}
+	vi := VSVersionInfo{}
 
 	// 0 for binary, 1 for text
 	vi.WType = 0x00
