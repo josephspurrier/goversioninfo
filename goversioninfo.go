@@ -111,7 +111,7 @@ func str2Uint32(s string) uint32 {
 	return uint32(u)
 }
 
-func buildUnicode(s string, zeroTerminate bool) []byte {
+func padString(s string, zeroTerminate bool) []byte {
 	b := make([]byte, 0, len(s)*2+2)
 
 	for _, x := range s {

@@ -119,7 +119,7 @@ func buildString(i int, v reflect.Value) (VSString, bool, uint16) {
 	// If the value is set
 	if sValue != "" {
 		// Create key
-		ss.SzKey = buildUnicode(sName, false)
+		ss.SzKey = padString(sName, false)
 		soFar := len(ss.SzKey) + 6
 		ss.Padding1 = padBytes(4 - int(math.Mod(float64(soFar), 4)))
 		// Ensure there is at least 4 bytes between the key and value by NOT
@@ -129,7 +129,7 @@ func buildString(i int, v reflect.Value) (VSString, bool, uint16) {
 		}*/
 
 		// Create value
-		ss.Value = buildUnicode(sValue, true)
+		ss.Value = padString(sValue, true)
 		soFar += (len(ss.Value) + len(ss.Padding1))
 		ss.Padding2 = padBytes(4 - int(math.Mod(float64(soFar), 4)))
 		// Eliminate too much spacing
@@ -167,7 +167,7 @@ func buildStringTable(vi *VersionInfo) (VSStringTable, uint16) {
 	st.WType = 0x01
 
 	// Language identifier and Code page
-	st.SzKey = buildUnicode(vi.VarFileInfo.Translation.getTranslationString(), false)
+	st.SzKey = padString(vi.VarFileInfo.Translation.getTranslationString(), false)
 	soFar := len(st.SzKey) + 6
 	st.Padding = padBytes(4 - int(math.Mod(float64(soFar), 4)))
 
@@ -195,7 +195,7 @@ func buildStringFileInfo(vi *VersionInfo) (VSStringFileInfo, uint16) {
 	// 0 for binary, 1 for text
 	sf.WType = 0x01
 
-	sf.SzKey = buildUnicode("StringFileInfo", false)
+	sf.SzKey = padString("StringFileInfo", false)
 	soFar := len(sf.SzKey) + 6
 	sf.Padding = padBytes(4 - int(math.Mod(float64(soFar), 4)))
 
@@ -210,7 +210,7 @@ func buildStringFileInfo(vi *VersionInfo) (VSStringFileInfo, uint16) {
 func buildVar(vfi VarFileInfo) VSVar {
 	vs := VSVar{}
 	// Create key
-	vs.SzKey = buildUnicode("Translation", false)
+	vs.SzKey = padString("Translation", false)
 	soFar := len(vs.SzKey) + 6
 	vs.Padding = padBytes(4 - int(math.Mod(float64(soFar), 4)))
 
@@ -239,7 +239,7 @@ func buildVarFileInfo(vfi VarFileInfo) VSVarFileInfo {
 	// 0 for binary, 1 for text
 	vf.WType = 0x01
 
-	vf.SzKey = buildUnicode("VarFileInfo", false)
+	vf.SzKey = padString("VarFileInfo", false)
 	soFar := len(vf.SzKey) + 6
 	vf.Padding = padBytes(4 - int(math.Mod(float64(soFar), 4)))
 
@@ -282,7 +282,7 @@ func (v *VersionInfo) Build() {
 	// 0 for binary, 1 for text
 	vi.WType = 0x00
 
-	vi.SzKey = buildUnicode("VS_VERSION_INFO", false)
+	vi.SzKey = padString("VS_VERSION_INFO", false)
 	soFar := len(vi.SzKey) + 6
 	vi.Padding1 = padBytes(4 - int(math.Mod(float64(soFar), 4)))
 
