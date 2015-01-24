@@ -10,7 +10,7 @@ Package creates a syso file which contains Microsoft Version Information and an 
 
 To install, run the following command:
 
-~~~ go
+~~~
 go get github.com/josephspurrier/goversioninfo/cmd/goversioninfo
 ~~~
 
@@ -27,7 +27,7 @@ Run "go generate" before each "go build" and goversioninfo.exe will create a fil
 
 A complete list of the flags you can pass to goversioninfo are below:
 
-~~~ go
+~~~
   -charset=0: charset ID
   -comment="": StringFileInfo.Comments
   -company="": StringFileInfo.CompanyName
