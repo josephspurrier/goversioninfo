@@ -14,18 +14,20 @@ To install, run the following command:
 go get github.com/josephspurrier/goversioninfo/cmd/goversioninfo
 ~~~
 
+Copy versioninfo.json into your working directory and then modify the file with your own settings.
+
 Then to utilize the wonderful "go generate" command, add a similar text to the top of your Go source code:
 ~~~ go
 //go:generate goversioninfo -file-version=v2.0.0.0 -ver-major=2 -ver-minor=0 -ver-patch=0 -ver-build=0 -icon=icon.ico
 ~~~
 
-Run "go generate" before each build and goversioninfo.exe will create a file called resource.syso in the same directory as the Go source code.
+Run "go generate" before each "go build" and goversioninfo.exe will create a file called resource.syso in the same directory as the Go source code.
 
-## Comman-Line Flags
+## Command-Line Flags
 
 A complete list of the flags you can pass to goversioninfo.exe are below:
 
-~~ go
+~~~ go
   -charset=0: charset ID
   -comment="": StringFileInfo.Comments
   -company="": StringFileInfo.CompanyName
