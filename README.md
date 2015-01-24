@@ -18,14 +18,14 @@ Copy versioninfo.json into your working directory and then modify the file with 
 
 Then to utilize the wonderful "go generate" command, add a similar text to the top of your Go source code:
 ~~~ go
-//go:generate goversioninfo -file-version=v2.0.0.0 -ver-major=2 -ver-minor=0 -ver-patch=0 -ver-build=0 -icon=icon.ico
+//go:generate goversioninfo -icon=icon.ico
 ~~~
 
 Run "go generate" before each "go build" and goversioninfo.exe will create a file called resource.syso in the same directory as the Go source code.
 
 ## Command-Line Flags
 
-A complete list of the flags you can pass to goversioninfo.exe are below:
+A complete list of the flags you can pass to goversioninfo are below:
 
 ~~~ go
   -charset=0: charset ID
@@ -51,12 +51,12 @@ A complete list of the flags you can pass to goversioninfo.exe are below:
   -ver-patch=-1: FileVersion.Patch
 ~~~
 
-You can look over the Microsoft Resource Information: (VERSIONINFO resource)[https://msdn.microsoft.com/en-us/library/windows/desktop/aa381058(v=vs.85).aspx]
+You can look over the Microsoft Resource Information: [VERSIONINFO resource](https://msdn.microsoft.com/en-us/library/windows/desktop/aa381058(v=vs.85).aspx)
 
-You can look through the Microsoft Version Information structures: (Version Information Structures)[https://msdn.microsoft.com/en-us/library/windows/desktop/ff468916(v=vs.85).aspx]
+You can look through the Microsoft Version Information structures: [Version Information Structures](https://msdn.microsoft.com/en-us/library/windows/desktop/ff468916(v=vs.85).aspx)
 
 ## Major Contributions
 
-Thanks to [Mateusz Czaplinski](https://github.com/akavel/rsrc) for his embedded binary resource package.
-
 Thanks to [Tamás Gulácsi](https://github.com/tgulacsi) for his superb code additions, refactoring, optimization to make this a solid package.
+
+Thanks to [Mateusz Czaplinski](https://github.com/akavel/rsrc) for his embedded binary resource package.
