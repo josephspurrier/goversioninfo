@@ -29,6 +29,7 @@ import (
 func main() {
 	flagExample := flag.Bool("example", false, "just dump out an example versioninfo.json to stdout")
 	flagOut := flag.String("o", "resource.syso", "output file name")
+	flagIcon := flag.String("icon", "", "icon file name")
 
 	flagComment := flag.String("comment", "", "StringFileInfo.Comments")
 	flagCompany := flag.String("company", "", "StringFileInfo.CompanyName")
@@ -92,6 +93,9 @@ func main() {
 	}
 
 	// Override from flags
+	if *flagIcon != "" {
+		vi.IconPath = *flagIcon
+	}
 	if *flagComment != "" {
 		vi.StringFileInfo.Comments = *flagComment
 	}
