@@ -20,8 +20,11 @@ import (
 	"strconv"
 )
 
+// CharsetID must use be a character-set identifier from:
+// https://msdn.microsoft.com/en-us/library/windows/desktop/aa381058(v=vs.85).aspx#charsetID
 type CharsetID uint16
 
+// CharsetID constants
 const (
 	Cs7ASCII       = CharsetID(0)    // Cs7ASCII:	0	0000	7-bit ASCII
 	CsJIS          = CharsetID(932)  // CsJIS:	932	03A4	Japan (Shift ? JIS X-0208)
@@ -37,6 +40,7 @@ const (
 	CsArabic       = CharsetID(1256) // CsArabic:	1256	04E8	Arabic
 )
 
+// UnmarshalJSON converts the string to a CharsetID
 func (cs *CharsetID) UnmarshalJSON(p []byte) error {
 	if len(p) == 0 {
 		return nil
@@ -61,8 +65,11 @@ func (cs *CharsetID) UnmarshalJSON(p []byte) error {
 	return nil
 }
 
+// LangID must use be a character-set identifier from:
+// https://msdn.microsoft.com/en-us/library/windows/desktop/aa381058(v=vs.85).aspx#langID
 type LangID uint16
 
+// UnmarshalJSON converts the string to a LangID
 func (lng *LangID) UnmarshalJSON(p []byte) error {
 	if len(p) == 0 {
 		return nil
@@ -87,6 +94,7 @@ func (lng *LangID) UnmarshalJSON(p []byte) error {
 	return nil
 }
 
+// LangID constants
 const (
 	LngArabic                = LangID(0x0401) // LngArabic: 0x0401 Arabic
 	LngBulgarian             = LangID(0x0402) // LngBulgarian: 0x0402 Bulgarian
