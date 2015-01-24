@@ -166,12 +166,6 @@ func (vi *VersionInfo) Walk() {
 	binutil.Walk(vi.Structure, func(v reflect.Value, path string) error {
 		if binutil.Plain(v.Kind()) {
 			w.WriteLE(v.Interface())
-			return nil
-		}
-		vv, ok := v.Interface().(binutil.SizedReader)
-		if ok {
-			w.WriteFromSized(vv)
-			return binutil.WALK_SKIP
 		}
 		return nil
 	})
