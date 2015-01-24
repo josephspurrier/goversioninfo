@@ -9,23 +9,26 @@ Package creates a syso file which contains Microsoft Version Information and an 
 ## Usage
 
 To install, run the following command:
-
 ~~~
 go get github.com/josephspurrier/goversioninfo/cmd/goversioninfo
 ~~~
 
 Copy versioninfo.json into your working directory and then modify the file with your own settings.
 
-Then to utilize the wonderful "go generate" command, add a similar text to the top of your Go source code:
+Add a similar text to the top of your Go source code:
 ~~~ go
 //go:generate goversioninfo -icon=icon.ico
 ~~~
 
-Run "go generate" before each "go build" and goversioninfo.exe will create a file called resource.syso in the same directory as the Go source code.
+Run the Go commands in this order so goversioninfo will create a file called resource.syso in the same directory as the Go source code.
+~~~
+go generate
+go build
+~~~
 
 ## Command-Line Flags
 
-A complete list of the flags you can pass to goversioninfo are below:
+Complete list of the flags for goversioninfo:
 
 ~~~
   -charset=0: charset ID
