@@ -6,6 +6,7 @@ Microsoft Version Info and Icon Resource Generator for the Go Language
 
 Package creates a syso file which contains Microsoft Version Information and an optional icon. When you run "go build", Go will embed the version information and icon in the executable. Go will automatically use the syso file if it's in the same directory as the main() function.
 
+Example of the file properties you can set using this package:
 ![Image of File Properties](http://josephspurrier.com/images/versioninfo.jpg)
 
 ## Usage
