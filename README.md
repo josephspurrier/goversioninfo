@@ -2,9 +2,9 @@ GoVersionInfo
 ==========
 [![Build Status](https://travis-ci.org/josephspurrier/goversioninfo.svg)](https://travis-ci.org/josephspurrier/goversioninfo) [![Coverage Status](https://coveralls.io/repos/josephspurrier/goversioninfo/badge.svg)](https://coveralls.io/r/josephspurrier/goversioninfo) [![GoDoc](https://godoc.org/github.com/josephspurrier/goversioninfo?status.svg)](https://godoc.org/github.com/josephspurrier/goversioninfo)
 
-Microsoft Version Info and Icon Resource Generator for the Go Language
+Microsoft Windows Version Info and Icon Resource Generator for the Go Language
 
-Package creates a syso file which contains Microsoft Version Information and an optional icon. When you run "go build", Go will embed the version information and icon in the executable. Go will automatically use the syso file if it's in the same directory as the main() function.
+Package creates a syso file which contains Microsoft Windows Version Information and an optional icon. When you run "go build", Go will embed the version information and icon in the executable. Go will automatically use the syso file if it's in the same directory as the main() function.
 
 Example of the file properties you can set using this package:
 ![Image of File Properties](http://josephspurrier.com/images/versioninfo.jpg)
