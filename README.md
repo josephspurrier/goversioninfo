@@ -8,7 +8,7 @@ Package creates a syso file which contains Microsoft Windows Version Information
 
 Example of the file properties you can set using this package:
 
-![Image of File Properties](http://josephspurrier.com/images/versioninfo.jpg)
+![Image of File Properties](https://cloud.githubusercontent.com/assets/2394539/12073634/0b32cb04-b0f6-11e5-9d8e-f9923ca554cf.jpg)
 
 ## Usage
 
