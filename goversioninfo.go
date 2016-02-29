@@ -90,11 +90,11 @@ type StringFileInfo struct {
 // Helpers
 // *****************************************************************************
 
-type sizedReader struct {
+type SizedReader struct {
 	*bytes.Buffer
 }
 
-func (s sizedReader) Size() int64 {
+func (s SizedReader) Size() int64 {
 	return int64(s.Buffer.Len())
 }
 
@@ -188,7 +188,7 @@ func (vi *VersionInfo) WriteSyso(filename string) error {
 	coff := coff.NewRSRC()
 
 	// ID 16 is for Version Information
-	coff.AddResource(16, 1, sizedReader{&vi.Buffer})
+	coff.AddResource(16, 1, SizedReader{&vi.Buffer})
 
 	// If icon is enabled
 	if vi.IconPath != "" {
