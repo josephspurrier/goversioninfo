@@ -1,7 +1,3 @@
-// Copyright 2015 Joseph Spurrier
-// Author: Joseph Spurrier (http://josephspurrier.com)
-// License: http://www.apache.org/licenses/LICENSE-2.0.html
-
 // Package goversioninfo creates a syso file which contains Microsoft Version Information and an optional icon.
 package goversioninfo
 
