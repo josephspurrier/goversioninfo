@@ -107,16 +107,16 @@ func str2Uint32(s string) uint32 {
 	return uint32(u)
 }
 
-func padString(s string, zeroTerminate bool) []byte {
-	b := make([]byte, 0, len(s)*2+2)
+func padString(s string, zeros int) []byte {
+
+	b := make([]byte, 0, len(s)*2)
 
 	for _, x := range s {
 		b = append(b, byte(x))
 		b = append(b, 0x00)
 	}
 
-	if zeroTerminate {
-		b = append(b, 0x00)
+	for i := 0; i < zeros; i++ {
 		b = append(b, 0x00)
 	}
 

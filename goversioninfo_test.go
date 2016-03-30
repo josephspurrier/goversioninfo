@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"log"
 	"os"
 	"path/filepath"
 	"testing"
@@ -20,6 +21,7 @@ func TestFile1(t *testing.T) {
 	testFile(t, "cmd")
 	testFile(t, "explorer")
 	testFile(t, "control")
+	testFile(t, "simple")
 }
 
 func testFile(t *testing.T, filename string) {
@@ -44,6 +46,10 @@ func testFile(t *testing.T, filename string) {
 	vi.Walk()
 
 	path2, _ := filepath.Abs("./tests/" + filename + ".hex")
+
+	// This is for easily exporting results when the algorithm improves
+	/*path3, _ := filepath.Abs("./tests/" + filename + ".out")
+	ioutil.WriteFile(path3, vi.Buffer.Bytes(), 0655)*/
 
 	expected, err := ioutil.ReadFile(path2)
 	if err != nil {
@@ -362,6 +368,7 @@ func TestStr2Uint32(t *testing.T) {
 		in  string
 		out uint32
 	}{{"0", 0}, {"", 0}, {"FFEF", 65519}, {"\x00\x00", 0}} {
+		log.SetOutput(ioutil.Discard)
 		got := str2Uint32(tt.in)
 		if got != tt.out {
 			t.Errorf("%q: awaited %d, got %d.", tt.in, tt.out, got)
