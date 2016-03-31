@@ -34,6 +34,7 @@ type VersionInfo struct {
 	Buffer         bytes.Buffer
 	Structure      VSVersionInfo
 	IconPath       string
+	ManifestPath   string
 }
 
 // Translation with langid and charsetid.
@@ -185,6 +186,19 @@ func (vi *VersionInfo) WriteSyso(filename string) error {
 
 	// ID 16 is for Version Information
 	coff.AddResource(16, 1, SizedReader{&vi.Buffer})
+
+	// If manifest is enabled
+	if vi.ManifestPath != "" {
+
+		manifest, err := binutil.SizedOpen(vi.ManifestPath)
+		if err != nil {
+			return err
+		}
+		defer manifest.Close()
+
+		id := <-newID
+		coff.AddResource(rtManifest, id, manifest)
+	}
 
 	// If icon is enabled
 	if vi.IconPath != "" {

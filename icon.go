@@ -40,6 +40,7 @@ THE SOFTWARE.
 const (
 	rtIcon      = coff.RT_ICON
 	rtGroupIcon = coff.RT_GROUP_ICON
+	rtManifest  = coff.RT_MANIFEST
 )
 
 // on storing icons, see: http://blogs.msdn.com/b/oldnewthing/archive/2012/07/20/10331787.aspx
