@@ -104,7 +104,7 @@ type VSVar struct {
 	Value        uint32
 }
 
-func buildString(i int, v reflect.Value) (VSString, bool, uint16) {
+func buildString(i int, v reflect.Value) (VSString, bool) {
 	sValue := string(v.Field(i).Interface().(string))
 	sName := v.Type().Field(i).Name
 
@@ -142,11 +142,10 @@ func buildString(i int, v reflect.Value) (VSString, bool, uint16) {
 		//ss.WLength = 6 + uint16(soFar) + (ss.WValueLength * 2)
 		ss.WLength = uint16(6 + soFar + len(ss.Value))
 
-		// Return the real size
-		return ss, true, uint16(6 + soFar + len(ss.Value))
+		return ss, true
 	}
 
-	return ss, false, 0
+	return ss, false
 }
 
 func buildStringTable(vi *VersionInfo) VSStringTable {
@@ -169,22 +168,17 @@ func buildStringTable(vi *VersionInfo) VSStringTable {
 	st.Padding = padBytes(soFar)
 	soFar += len(st.SzKey)
 
-	var sRealLength uint16
-	sRealLength = 0
-
 	// Loop through the struct fields
 	v := reflect.ValueOf(vi.StringFileInfo)
 	for i := 0; i < v.NumField(); i++ {
 		// If the struct is valid
-		if r, ok, extra := buildString(i, v); ok {
+		if r, ok := buildString(i, v); ok {
 			st.Children = append(st.Children, r)
-			sRealLength += extra
-			// Don't use the returned size, it's not correct
-			//st.WLength += r.WLength
+			st.WLength += r.WLength
 		}
 	}
 
-	st.WLength += 6 + uint16(soFar) + sRealLength
+	st.WLength += 6 + uint16(soFar)
 
 	return st
 }
@@ -265,7 +259,7 @@ func buildVarFileInfo(vfi VarFileInfo) VSVarFileInfo {
 	vf.Padding = padBytes(soFar)
 	soFar += len(vf.SzKey)
 
-	// TODO Allow for more than one string table
+	// TODO Allow for more than one var table
 	st := buildVar(vfi)
 	vf.Value = st
 	vf.WLength = 6 + st.WLength + uint16(soFar)
@@ -324,15 +318,13 @@ func (v *VersionInfo) Build() {
 	vi.Padding2 = []byte{}
 
 	// Build strings
-	sf := buildStringFileInfo(v)
-	vi.Children = sf
+	vi.Children = buildStringFileInfo(v)
 
 	// Build translation
-	vf := buildVarFileInfo(v.VarFileInfo)
-	vi.Children2 = vf
+	vi.Children2 = buildVarFileInfo(v.VarFileInfo)
 
 	// Calculate the total size
-	vi.WLength += 6 + uint16(soFar) + vi.WValueLength + sf.WLength + vi.Children2.WLength
+	vi.WLength += 6 + uint16(soFar) + vi.WValueLength + vi.Children.WLength + vi.Children2.WLength
 
 	v.Structure = vi
 }
