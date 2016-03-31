@@ -86,7 +86,7 @@ The information on how to create a .rc file is available [here](https://msdn.mic
 
 The majority of the code for the creation of the syso file is from this package: [https://github.com/akavel/rsrc](https://github.com/akavel/rsrc)
 
-There is an issue with adding the icon resource that prevents your application from being compressed or modified with a resource editor. Please use with caution.
+There is an [issue](https://github.com/akavel/rsrc/issues/12) with adding the icon resource that prevents your application from being compressed or modified with a resource editor. Please use with caution.
 
 ## Major Contributions
 
