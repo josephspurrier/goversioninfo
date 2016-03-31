@@ -4,7 +4,7 @@ GoVersionInfo
 
 Microsoft Windows File Properties/Version Info and Icon Resource Generator for the Go Language
 
-Package creates a syso file which contains Microsoft Windows Version Information and an optional icon. When you run "go build", Go will embed the version information and icon in the executable. Go will automatically use the syso file if it's in the same directory as the main() function.
+Package creates a syso file which contains Microsoft Windows Version Information and an optional icon. When you run "go build", Go will embed the version information and an optional icon and an optional manifest in the executable. Go will automatically use the syso file if it's in the same directory as the main() function.
 
 Example of the file properties you can set using this package:
 
@@ -19,7 +19,7 @@ go get github.com/josephspurrier/goversioninfo/cmd/goversioninfo
 
 Copy versioninfo.json into your working directory and then modify the file with your own settings.
 
-Add a similar text to the top of your Go source code:
+Add a similar text to the top of your Go source code (-icon and -manifest are optional):
 ~~~ go
 //go:generate goversioninfo -icon=icon.ico -manifest=goversioninfo.exe.manifest
 ~~~
@@ -80,7 +80,7 @@ windres -i versioninfo.rc -O coff -o versioninfo.syso
 PAUSE
 ~~~
 
-The information on how to create a .rc file is available [here](https://msdn.microsoft.com/en-us/library/windows/desktop/aa381043(v=vs.85).aspx). You can use the versioninfo.rc file to create a syso file that contains version info, icon, and manifest.
+The information on how to create a .rc file is available [here](https://msdn.microsoft.com/en-us/library/windows/desktop/aa381043(v=vs.85).aspx). You can use the versioninfo.rc file to create a .syso file that contains version info, icon, and manifest.
 
 ## Issues
 
