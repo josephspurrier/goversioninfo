@@ -170,8 +170,9 @@ func (vi *VersionInfo) Walk() {
 	vi.Buffer = b
 }
 
-// WriteSyso creates a resource file from the version info and optionally an icon
-func (vi *VersionInfo) WriteSyso(filename string) error {
+// WriteSyso creates a resource file from the version info and optionally an icon.
+// arch must be an architecture string accepted by coff.Arch, like "386" or "amd64"
+func (vi *VersionInfo) WriteSyso(filename string, arch string) error {
 
 	// Channel for generating IDs
 	newID := make(chan uint16)
@@ -183,6 +184,12 @@ func (vi *VersionInfo) WriteSyso(filename string) error {
 
 	// Create a new RSRC section
 	coff := coff.NewRSRC()
+
+	// Set the architechture
+	err := coff.Arch(arch)
+	if err != nil {
+		return err
+	}
 
 	// ID 16 is for Version Information
 	coff.AddResource(16, 1, SizedReader{&vi.Buffer})

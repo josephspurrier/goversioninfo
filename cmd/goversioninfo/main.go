@@ -35,6 +35,8 @@ func main() {
 	flagTranslation := flag.Int("translation", 0, "translation ID")
 	flagCharset := flag.Int("charset", 0, "charset ID")
 
+	flag64 := flag.Bool("64", false, "generate 64-bit binaries")
+
 	flagVerMajor := flag.Int("ver-major", -1, "FileVersion.Major")
 	flagVerMinor := flag.Int("ver-minor", -1, "FileVersion.Minor")
 	flagVerPatch := flag.Int("ver-patch", -1, "FileVersion.Patch")
@@ -150,8 +152,14 @@ func main() {
 	// Write the data to a buffer
 	vi.Walk()
 
+	// Set the architecture, defaulted to 32-bit.
+	arch := "386" // 32-bit
+	if flag64 != nil && *flag64 {
+		arch = "amd64" // 64-bit
+	}
+
 	// Create the file
-	if err := vi.WriteSyso(*flagOut); err != nil {
+	if err := vi.WriteSyso(*flagOut, arch); err != nil {
 		log.Printf("Error writing syso: %v", err)
 		os.Exit(3)
 	}
