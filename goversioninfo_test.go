@@ -61,7 +61,15 @@ func testFile(t *testing.T, filename string) {
 	}
 }
 
-func TestWrite(t *testing.T) {
+func TestWrite32(t *testing.T) {
+	doTestWrite(t, "386")
+}
+
+func TestWrite64(t *testing.T) {
+	doTestWrite(t, "amd64")
+}
+
+func doTestWrite(t *testing.T, arch string) {
 	filename := "cmd"
 
 	path, _ := filepath.Abs("./tests/" + filename + ".json")
@@ -86,7 +94,7 @@ func TestWrite(t *testing.T) {
 
 	file := "resource.syso"
 
-	vi.WriteSyso(file)
+	vi.WriteSyso(file, arch)
 
 	_, err = ioutil.ReadFile(file)
 	if err != nil {
@@ -143,7 +151,7 @@ func TestIcon(t *testing.T) {
 
 	file := "resource.syso"
 
-	vi.WriteSyso(file)
+	vi.WriteSyso(file, "386")
 
 	_, err = ioutil.ReadFile(file)
 	if err != nil {
@@ -181,7 +189,7 @@ func TestBadIcon(t *testing.T) {
 
 	file := "resource.syso"
 
-	vi.WriteSyso(file)
+	vi.WriteSyso(file, "386")
 
 	_, err = ioutil.ReadFile(file)
 	if err != nil {
@@ -219,7 +227,7 @@ func TestTimestamp(t *testing.T) {
 
 	file := "resource.syso"
 
-	vi.WriteSyso(file)
+	vi.WriteSyso(file, "386")
 
 	_, err = ioutil.ReadFile(file)
 	if err != nil {
@@ -318,7 +326,7 @@ func ExampleUseIcon() {
 
 	file := "resource.syso"
 
-	vi.WriteSyso(file)
+	vi.WriteSyso(file, "386")
 
 	_, err = ioutil.ReadFile(file)
 	if err != nil {
@@ -355,7 +363,7 @@ func ExampleUseTimestamp() {
 
 	file := "resource.syso"
 
-	vi.WriteSyso(file)
+	vi.WriteSyso(file, "386")
 
 	_, err = ioutil.ReadFile(file)
 	if err != nil {

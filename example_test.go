@@ -40,7 +40,7 @@ func logic() {
 	vi.IconPath = "icon.ico"
 
 	// Create the file
-	if err := vi.WriteSyso("resource.syso"); err != nil {
+	if err := vi.WriteSyso("resource.syso", "386"); err != nil {
 		log.Printf("Error writing syso: %v", err)
 		os.Exit(3)
 	}
