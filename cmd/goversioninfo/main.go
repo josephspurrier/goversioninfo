@@ -45,7 +45,7 @@ func main() {
 	flagProductVerMajor := flag.Int("product-ver-major", -1, "ProductVersion.Major")
 	flagProductVerMinor := flag.Int("product-ver-minor", -1, "ProductVersion.Minor")
 	flagProductVerPatch := flag.Int("product-ver-patch", -1, "ProductVersion.Patch")
-	flagProductVerBuild := flag.Int("product-ver-build", -1, "ProdoctVersion.Build")
+	flagProductVerBuild := flag.Int("product-ver-build", -1, "ProductVersion.Build")
 
 	flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, "Usage: %s [flags] <versioninfo.json>\n\nPossible flags:\n", os.Args[0])
