@@ -16,6 +16,7 @@ import (
 func main() {
 	flagExample := flag.Bool("example", false, "just dump out an example versioninfo.json to stdout")
 	flagOut := flag.String("o", "resource.syso", "output file name")
+	flagPlatformSpecific := flag.Bool("platform-specific", false, "output i386 and amd64 named resource.syso, ignores -o")
 	flagIcon := flag.String("icon", "", "icon file name")
 	flagManifest := flag.String("manifest", "", "manifest file name")
 
@@ -70,7 +71,7 @@ func main() {
 		}
 	}
 
-	// Read the config file
+	// Read the config file.
 	jsonBytes, err := ioutil.ReadAll(input)
 	input.Close()
 	if err != nil {
@@ -78,16 +79,16 @@ func main() {
 		os.Exit(1)
 	}
 
-	// Create a new container
+	// Create a new container.
 	vi := &goversioninfo.VersionInfo{}
 
-	// Parse the config
+	// Parse the config.
 	if err := vi.ParseJSON(jsonBytes); err != nil {
 		log.Printf("Could not parse the .json file: %v", err)
 		os.Exit(2)
 	}
 
-	// Override from flags
+	// Override from flags.
 	if *flagIcon != "" {
 		vi.IconPath = *flagIcon
 	}
@@ -138,6 +139,7 @@ func main() {
 		vi.VarFileInfo.Translation.CharsetID = goversioninfo.CharsetID(*flagCharset)
 	}
 
+	// File Version flags.
 	if *flagVerMajor >= 0 {
 		vi.FixedFileInfo.FileVersion.Major = *flagVerMajor
 	}
@@ -151,6 +153,7 @@ func main() {
 		vi.FixedFileInfo.FileVersion.Build = *flagVerBuild
 	}
 
+	// Product Version flags.
 	if *flagProductVerMajor >= 0 {
 		vi.FixedFileInfo.ProductVersion.Major = *flagProductVerMajor
 	}
@@ -164,22 +167,42 @@ func main() {
 		vi.FixedFileInfo.ProductVersion.Build = *flagProductVerBuild
 	}
 
-	// Fill the structures with config data
+	// Fill the structures with config data.
 	vi.Build()
 
-	// Write the data to a buffer
+	// Write the data to a buffer.
 	vi.Walk()
 
-	// Set the architecture, defaulted to 32-bit.
-	arch := "386" // 32-bit
-	if flag64 != nil && *flag64 {
-		arch = "amd64" // 64-bit
+	// List of the architectures to output.
+	var archs []string
+
+	// If platform specific, then output all the architectures for Windows.
+	if flagPlatformSpecific != nil && *flagPlatformSpecific {
+		archs = []string{"386", "amd64"}
+	} else {
+		// Set the architecture, defaulted to 32-bit.
+		archs = []string{"386"} // 32-bit
+		if flag64 != nil && *flag64 {
+			archs = []string{"amd64"} // 64-bit
+		}
 	}
 
-	// Create the file
-	if err := vi.WriteSyso(*flagOut, arch); err != nil {
-		log.Printf("Error writing syso: %v", err)
-		os.Exit(3)
+	// Loop through each artchitecture.
+	for _, item := range archs {
+		// Create the file using the -o argument.
+		fileout := *flagOut
+
+		// If the number of architectures is greater than one, then don't use
+		// the -o argument.
+		if len(archs) > 1 {
+			fileout = fmt.Sprintf("resource_windows_%v.syso", item)
+		}
+
+		// Create the file for the specified architecture.
+		if err := vi.WriteSyso(fileout, item); err != nil {
+			log.Printf("Error writing syso: %v", err)
+			os.Exit(3)
+		}
 	}
 }
 
@@ -205,11 +228,11 @@ const example = `{
 	},
 	"StringFileInfo": {
 		"Comments": "",
-		"CompanyName": "Joseph Spurrier Ltd.",
+		"CompanyName": "Company, Inc.",
 		"FileDescription": "",
 		"FileVersion": "6.3.9600.17284 (aaa.140822-1915)",
 		"InternalName": "goversioninfo",
-		"LegalCopyright": "© Joseph Spurrier. Licensed under the Apache License, Version 2.0",
+		"LegalCopyright": "© Author. Licensed under MIT.",
 		"LegalTrademarks": "",
 		"OriginalFilename": "goversioninfo",
 		"PrivateBuild": "",
