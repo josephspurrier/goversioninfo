@@ -68,6 +68,27 @@ You can look over the Microsoft Resource Information: [VERSIONINFO resource](htt
 
 You can look through the Microsoft Version Information structures: [Version Information Structures](https://msdn.microsoft.com/en-us/library/windows/desktop/ff468916(v=vs.85).aspx)
 
+## PowerShell Differences
+
+In PowerShell, the version components are named differently than the fields in
+the versioninfo.json file:
+
+```
+PowerShell:          versioninfo.json:
+-----------          -----------------
+FileMajorPart      = FileVersion.Major
+FileMinorPart      = FileVersion.Minor
+FileBuildPart      = FileVersion.Patch
+FilePrivatePart    = FileVersion.Build
+ProductMajorPart   = ProductVersion.Major
+ProductMinorPart   = ProductVersion.Minor
+ProductBuildPart   = ProductVersion.Patch
+ProductPrivatePart = ProductVersion.Build
+
+```
+
+If you find any other differences, let me know.
+
 ## Alternatives to this Tool
 
 You can also use [windres](https://sourceware.org/binutils/docs/binutils/windres.html) to create the syso file. The windres executable is available in either [MinGW](http://www.mingw.org/) or [tdm-gcc](http://tdm-gcc.tdragon.net/).
