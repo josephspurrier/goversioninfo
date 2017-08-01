@@ -109,12 +109,17 @@ func str2Uint32(s string) uint32 {
 }
 
 func padString(s string, zeros int) []byte {
-
-	b := make([]byte, 0, len(s)*2)
-
+	b := make([]byte, 0, len([]rune(s))*2)
 	for _, x := range s {
-		b = append(b, byte(x))
-		b = append(b, 0x00)
+		tt := int32(x)
+
+		b = append(b, byte(tt))
+		if tt > 255 {
+			tt = tt >> 8
+			b = append(b, byte(tt))
+		} else {
+			b = append(b, byte(0))
+		}
 	}
 
 	for i := 0; i < zeros; i++ {
