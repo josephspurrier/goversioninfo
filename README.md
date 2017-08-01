@@ -46,6 +46,7 @@ Complete list of the flags for goversioninfo:
   -internal-name="": StringFileInfo.InternalName
   -manifest="": manifest file name
   -o="resource.syso": output file name
+  -platform-specific=false: output i386 and amd64 named resource.syso, ignores -o
   -original-name="": StringFileInfo.OriginalFilename
   -private-build="": StringFileInfo.PrivateBuild
   -product-name="": StringFileInfo.ProductName
@@ -53,10 +54,14 @@ Complete list of the flags for goversioninfo:
   -special-build="": StringFileInfo.SpecialBuild
   -trademark="": StringFileInfo.LegalTrademarks
   -translation=0: translation ID
-  -ver-build=-1: FileVersion.Build
   -ver-major=-1: FileVersion.Major
   -ver-minor=-1: FileVersion.Minor
   -ver-patch=-1: FileVersion.Patch
+  -ver-build=-1: FileVersion.Build
+  -product-ver-major=-1: ProductVersion.Major
+  -product-ver-minor=-1: ProductVersion.Minor
+  -product-ver-patch=-1: ProductVersion.Patch
+  -product-ver-build=-1: ProductVersion.Build
 ~~~
 
 You can look over the Microsoft Resource Information: [VERSIONINFO resource](https://msdn.microsoft.com/en-us/library/windows/desktop/aa381058(v=vs.85).aspx)
