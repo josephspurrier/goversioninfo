@@ -42,6 +42,11 @@ func main() {
 	flagVerPatch := flag.Int("ver-patch", -1, "FileVersion.Patch")
 	flagVerBuild := flag.Int("ver-build", -1, "FileVersion.Build")
 
+	flagProductVerMajor := flag.Int("product-ver-major", -1, "ProductVersion.Major")
+	flagProductVerMinor := flag.Int("product-ver-minor", -1, "ProductVersion.Minor")
+	flagProductVerPatch := flag.Int("product-ver-patch", -1, "ProductVersion.Patch")
+	flagProductVerBuild := flag.Int("product-ver-build", -1, "ProductVersion.Build")
+
 	flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, "Usage: %s [flags] <versioninfo.json>\n\nPossible flags:\n", os.Args[0])
 		flag.PrintDefaults()
@@ -144,6 +149,19 @@ func main() {
 	}
 	if *flagVerBuild >= 0 {
 		vi.FixedFileInfo.FileVersion.Build = *flagVerBuild
+	}
+
+	if *flagProductVerMajor >= 0 {
+		vi.FixedFileInfo.ProductVersion.Major = *flagProductVerMajor
+	}
+	if *flagProductVerMinor >= 0 {
+		vi.FixedFileInfo.ProductVersion.Minor = *flagProductVerMinor
+	}
+	if *flagProductVerPatch >= 0 {
+		vi.FixedFileInfo.ProductVersion.Patch = *flagProductVerPatch
+	}
+	if *flagProductVerBuild >= 0 {
+		vi.FixedFileInfo.ProductVersion.Build = *flagProductVerBuild
 	}
 
 	// Fill the structures with config data
