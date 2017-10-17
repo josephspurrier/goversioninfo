@@ -197,7 +197,7 @@ func (vi *VersionInfo) WriteSyso(filename string, arch string) error {
 	}
 
 	// ID 16 is for Version Information
-	coff.AddResource(16, 1, SizedReader{&vi.Buffer})
+	coff.AddResource(16, 1, SizedReader{bytes.NewBuffer(vi.Buffer.Bytes())})
 
 	// If manifest is enabled
 	if vi.ManifestPath != "" {
