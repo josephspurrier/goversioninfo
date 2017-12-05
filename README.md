@@ -19,7 +19,7 @@ go get github.com/josephspurrier/goversioninfo/cmd/goversioninfo
 
 Copy versioninfo.json into your working directory and then modify the file with your own settings.
 
-Add a similar text to the top of your Go source code (-icon and -manifest are optional):
+Add a similar text to the top of your Go source code (-icon and -manifest are optional, but can also be specified in the versioninfo.json file):
 ~~~ go
 //go:generate goversioninfo -icon=icon.ico -manifest=goversioninfo.exe.manifest
 ~~~
