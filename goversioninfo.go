@@ -33,8 +33,8 @@ type VersionInfo struct {
 	Timestamp      bool
 	Buffer         bytes.Buffer
 	Structure      VSVersionInfo
-	IconPath       string
-	ManifestPath   string
+	IconPath       string `json:"IconPath"`
+	ManifestPath   string `json:"ManifestPath"`
 }
 
 // Translation with langid and charsetid.
