@@ -93,7 +93,10 @@ func doTestWrite(t *testing.T, arch string) {
 
 	file := "resource.syso"
 
-	vi.WriteSyso(file, arch)
+	err = vi.WriteSyso(file, arch)
+	if err != nil {
+		t.Errorf("Error writing syso: %v", err)
+	}
 
 	_, err = ioutil.ReadFile(file)
 	if err != nil {
@@ -150,7 +153,10 @@ func TestIcon(t *testing.T) {
 
 	file := "resource.syso"
 
-	vi.WriteSyso(file, "386")
+	err = vi.WriteSyso(file, "386")
+	if err != nil {
+		t.Errorf("Error writing syso: %v", err)
+	}
 
 	_, err = ioutil.ReadFile(file)
 	if err != nil {
@@ -188,7 +194,10 @@ func TestBadIcon(t *testing.T) {
 
 	file := "resource.syso"
 
-	vi.WriteSyso(file, "386")
+	err = vi.WriteSyso(file, "386")
+	if err == nil {
+		t.Errorf("Error is missing because it should throw an error")
+	}
 
 	_, err = ioutil.ReadFile(file)
 	if err != nil {
@@ -226,7 +235,10 @@ func TestTimestamp(t *testing.T) {
 
 	file := "resource.syso"
 
-	vi.WriteSyso(file, "386")
+	err = vi.WriteSyso(file, "386")
+	if err != nil {
+		t.Errorf("Error writing syso: %v", err)
+	}
 
 	_, err = ioutil.ReadFile(file)
 	if err != nil {
@@ -283,7 +295,10 @@ func TestWriteHex(t *testing.T) {
 
 	file := "resource.syso"
 
-	vi.WriteHex(file)
+	err = vi.WriteHex(file)
+	if err != nil {
+		t.Errorf("Error writing hex: %v", err)
+	}
 
 	_, err = ioutil.ReadFile(file)
 	if err != nil {

@@ -1,33 +1,32 @@
 package goversioninfo
 
 import (
-	"log"
 	"os"
 	"runtime"
 	"testing"
 )
 
-func TestTempIcon(t *testing.T) {
-	icoPath := "tmp.ico"
+func TestIconReleaseFileHandle(t *testing.T) {
+	icoPath := "testdata/resource/icon.ico"
+	icoPath2 := "testdata/resource/icon2.ico"
 	outPath := "resource.syso"
 	vi := &VersionInfo{}
 	vi.IconPath = icoPath
 
-	f, _ := os.Create(icoPath)
-	err := f.Close()
-	if err != nil {
-		log.Println("Unexpected error closing new file")
-	}
-
 	vi.Build()
 	vi.Walk()
-	err = vi.WriteSyso(outPath, runtime.GOARCH)
+	err := vi.WriteSyso(outPath, runtime.GOARCH)
 	if err != nil {
-		log.Println("Unexpected error writing resource")
+		t.Errorf("Unexpected error writing resource: %v", err)
 	}
 
-	err = os.Remove(icoPath)
+	err = os.Rename(icoPath, icoPath2)
 	if err != nil {
-		t.Fatal("Error deleting temporary icon", err)
+		t.Errorf("Error renaming icon: %v", err)
+	}
+
+	err = os.Rename(icoPath2, icoPath)
+	if err != nil {
+		t.Errorf("Error restoring icon: %v", err)
 	}
 }
