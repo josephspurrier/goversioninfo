@@ -63,7 +63,7 @@ func addIcon(coff *coff.Coff, fname string, newID <-chan uint16) error {
 	if err != nil {
 		return err
 	}
-	//defer f.Close() don't defer, files will be closed by a process later.
+	defer f.Close() // don't defer, files will be closed by a process later.
 
 	icons, err := ico.DecodeHeaders(f)
 	if err != nil {
