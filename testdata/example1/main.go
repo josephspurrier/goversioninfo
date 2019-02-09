@@ -1,4 +1,4 @@
-//go:generate goversioninfo -icon=icon.ico -manifest=goversioninfo.exe.manifest
+//go:generate goversioninfo -64 -icon=../resource/icon.ico -manifest=../resource/goversioninfo.exe.manifest
 
 package main
 

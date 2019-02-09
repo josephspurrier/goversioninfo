@@ -1,4 +1,4 @@
-# IDE specific settings
+# IDE Settings
 .vscode/
 
 # Folders
@@ -8,6 +8,10 @@ vendor/
 cmd/goversioninfo/goversioninfo
 cmd/goversioninfo/goversioninfo.exe
 resource.syso
+
+# Examples
+testdata/example1/example1
+testdata/example1/example1.exe
 
 # OS Files
 .DS_Store

@@ -24,8 +24,6 @@ before_install:
   - go get github.com/akavel/rsrc/ico
 script:
   - pwd
-  - go install josephspurrier/goversioninfo/cmd/goversioninfo
-  - cd $GOPATH/src/github.com/josephspurrier/goversioninfo/testdata/example
-  - go generate
-  - go build
+  - go install github.com/josephspurrier/goversioninfo/cmd/goversioninfo
+  - cd $GOPATH/src/github.com/josephspurrier/goversioninfo/testdata/example1 && go generate && go build
   - $GOPATH/bin/goveralls -service=travis-ci
