@@ -1,3 +1,5 @@
+os: windows
+
 language: go
 
 go:
@@ -19,4 +21,5 @@ before_install:
   - go get github.com/akavel/rsrc/ico
 
 script:
-    - $HOME/gopath/bin/goveralls -repotoken lNZXr7UDQai10RBP6KAOqA6fRcs5NlKEe
+    - SET
+    - $HOME\gopath\bin\goveralls -repotoken lNZXr7UDQai10RBP6KAOqA6fRcs5NlKEe
