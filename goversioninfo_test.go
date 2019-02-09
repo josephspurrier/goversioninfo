@@ -44,7 +44,7 @@ func testFile(t *testing.T, filename string) {
 	// Write the data to a buffer
 	vi.Walk()
 
-	path2, _ := filepath.Abs("./testdata/json/" + filename + ".hex")
+	path2, _ := filepath.Abs("./testdata/hex/" + filename + ".hex")
 
 	// This is for easily exporting results when the algorithm improves
 	/*path3, _ := filepath.Abs("./testdata/" + filename + ".out")
@@ -140,7 +140,7 @@ func TestIcon(t *testing.T) {
 		t.Error("Could not parse "+filename+".json", err)
 	}
 
-	vi.IconPath = "testdata/icon/icon.ico"
+	vi.IconPath = "testdata/resource/icon.ico"
 
 	// Fill the structures with config data
 	vi.Build()
