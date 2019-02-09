@@ -102,12 +102,12 @@ Below is a sample batch file you can use to create a .syso file from a .rc file.
 SET PATH=C:\TDM-GCC-64\bin;%PATH%
 REM SET PATH=C:\mingw64\bin;%PATH%
 
-windres -i versioninfo.rc -O coff -o versioninfo.syso
+windres -i testdata/rc/versioninfo.rc -O coff -o versioninfo.syso
 
 PAUSE
 ~~~
 
-The information on how to create a .rc file is available [here](https://msdn.microsoft.com/en-us/library/windows/desktop/aa381043(v=vs.85).aspx). You can use the versioninfo.rc file to create a .syso file that contains version info, icon, and manifest.
+The information on how to create a .rc file is available [here](https://msdn.microsoft.com/en-us/library/windows/desktop/aa381043(v=vs.85).aspx). You can use the testdata/rc/versioninfo.rc file to create a .syso file that contains version info, icon, and manifest.
 
 ## Issues
 
