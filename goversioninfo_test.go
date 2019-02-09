@@ -25,7 +25,7 @@ func TestFile1(t *testing.T) {
 }
 
 func testFile(t *testing.T, filename string) {
-	path, _ := filepath.Abs("./tests/" + filename + ".json")
+	path, _ := filepath.Abs("./testdata/" + filename + ".json")
 
 	jsonBytes, err := ioutil.ReadFile(path)
 	if err != nil {
@@ -45,10 +45,10 @@ func testFile(t *testing.T, filename string) {
 	// Write the data to a buffer
 	vi.Walk()
 
-	path2, _ := filepath.Abs("./tests/" + filename + ".hex")
+	path2, _ := filepath.Abs("./testdata/" + filename + ".hex")
 
 	// This is for easily exporting results when the algorithm improves
-	/*path3, _ := filepath.Abs("./tests/" + filename + ".out")
+	/*path3, _ := filepath.Abs("./testdata/" + filename + ".out")
 	ioutil.WriteFile(path3, vi.Buffer.Bytes(), 0655)*/
 
 	expected, err := ioutil.ReadFile(path2)
@@ -72,7 +72,7 @@ func TestWrite64(t *testing.T) {
 func doTestWrite(t *testing.T, arch string) {
 	filename := "cmd"
 
-	path, _ := filepath.Abs("./tests/" + filename + ".json")
+	path, _ := filepath.Abs("./testdata/" + filename + ".json")
 
 	jsonBytes, err := ioutil.ReadFile(path)
 	if err != nil {
@@ -107,7 +107,7 @@ func doTestWrite(t *testing.T, arch string) {
 func TestMalformedJSON(t *testing.T) {
 	filename := "bad"
 
-	path, _ := filepath.Abs("./tests/" + filename + ".json")
+	path, _ := filepath.Abs("./testdata/" + filename + ".json")
 
 	jsonBytes, err := ioutil.ReadFile(path)
 	if err != nil {
@@ -126,7 +126,7 @@ func TestMalformedJSON(t *testing.T) {
 func TestIcon(t *testing.T) {
 	filename := "cmd"
 
-	path, _ := filepath.Abs("./tests/" + filename + ".json")
+	path, _ := filepath.Abs("./testdata/" + filename + ".json")
 
 	jsonBytes, err := ioutil.ReadFile(path)
 	if err != nil {
@@ -164,7 +164,7 @@ func TestIcon(t *testing.T) {
 func TestBadIcon(t *testing.T) {
 	filename := "cmd"
 
-	path, _ := filepath.Abs("./tests/" + filename + ".json")
+	path, _ := filepath.Abs("./testdata/" + filename + ".json")
 
 	jsonBytes, err := ioutil.ReadFile(path)
 	if err != nil {
@@ -202,7 +202,7 @@ func TestBadIcon(t *testing.T) {
 func TestTimestamp(t *testing.T) {
 	filename := "cmd"
 
-	path, _ := filepath.Abs("./tests/" + filename + ".json")
+	path, _ := filepath.Abs("./testdata/" + filename + ".json")
 
 	jsonBytes, err := ioutil.ReadFile(path)
 	if err != nil {
@@ -240,7 +240,7 @@ func TestTimestamp(t *testing.T) {
 func TestVersionString(t *testing.T) {
 	filename := "cmd"
 
-	path, _ := filepath.Abs("./tests/" + filename + ".json")
+	path, _ := filepath.Abs("./testdata/" + filename + ".json")
 
 	jsonBytes, err := ioutil.ReadFile(path)
 	if err != nil {
@@ -262,7 +262,7 @@ func TestVersionString(t *testing.T) {
 func TestWriteHex(t *testing.T) {
 	filename := "cmd"
 
-	path, _ := filepath.Abs("./tests/" + filename + ".json")
+	path, _ := filepath.Abs("./testdata/" + filename + ".json")
 
 	jsonBytes, err := ioutil.ReadFile(path)
 	if err != nil {
@@ -301,7 +301,7 @@ func TestWriteHex(t *testing.T) {
 func ExampleUseIcon() {
 	filename := "cmd"
 
-	path, _ := filepath.Abs("./tests/" + filename + ".json")
+	path, _ := filepath.Abs("./testdata/" + filename + ".json")
 
 	jsonBytes, err := ioutil.ReadFile(path)
 	if err != nil {
@@ -337,7 +337,7 @@ func ExampleUseIcon() {
 func ExampleUseTimestamp() {
 	filename := "cmd"
 
-	path, _ := filepath.Abs("./tests/" + filename + ".json")
+	path, _ := filepath.Abs("./testdata/" + filename + ".json")
 
 	jsonBytes, err := ioutil.ReadFile(path)
 	if err != nil {
@@ -371,7 +371,7 @@ func ExampleUseTimestamp() {
 	}
 }
 
-func TestStr2Uint32(t *testing.T) {
+func testdatatr2Uint32(t *testing.T) {
 	for _, tt := range []struct {
 		in  string
 		out uint32
