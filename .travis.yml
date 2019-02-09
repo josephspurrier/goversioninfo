@@ -25,5 +25,10 @@ before_install:
 script:
   - pwd
   - go install github.com/josephspurrier/goversioninfo/cmd/goversioninfo
-  - cd $GOPATH/src/github.com/josephspurrier/goversioninfo/testdata/example1 && go generate && go build
-  - $GOPATH/bin/goveralls -service=travis-ci
+  - cd $GOPATH/src/github.com/josephspurrier/goversioninfo/testdata/example32
+  - GOOS=windows GOARCH=386 go generate
+  - GOOS=windows GOARCH=386 go build
+  - cd $GOPATH/src/github.com/josephspurrier/goversioninfo/testdata/example64
+  - GOOS=windows GOARCH=amd64 go generate
+  - GOOS=windows GOARCH=amd64 go build
+  - cd $GOPATH/src/github.com/josephspurrier/goversioninfo && $GOPATH/bin/goveralls -service=travis-ci

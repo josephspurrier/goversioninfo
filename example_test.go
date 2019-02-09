@@ -1,4 +1,4 @@
-//go:generate goversioninfo -64 -icon=testdata/resource/icon.ico -manifest=testdata/resource/goversioninfo.exe.manifest
+//go:generate goversioninfo -icon=testdata/resource/icon.ico -manifest=testdata/resource/goversioninfo.exe.manifest -64
 
 package goversioninfo_test
 

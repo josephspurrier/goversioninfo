@@ -6,12 +6,8 @@ vendor/
 
 # Files
 cmd/goversioninfo/goversioninfo
-cmd/goversioninfo/goversioninfo.exe
-resource.syso
-
-# Examples
-testdata/example1/example1
-testdata/example1/example1.exe
+*.exe
+*.syso
 
 # OS Files
 .DS_Store
