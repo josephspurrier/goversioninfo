@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Exit on error.
+set -e
+
 # Copy the icon to test file closing.
 cp $GOPATH/src/github.com/josephspurrier/goversioninfo/testdata/resource/icon.ico $GOPATH/src/github.com/josephspurrier/goversioninfo/testdata/resource/icon2.ico
 
