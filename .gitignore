@@ -1,1 +1,14 @@
+# IDE specific settings
+.vscode/
+
+# Folders
 vendor/
+
+# Files
+cmd/goversioninfo/goversioninfo
+cmd/goversioninfo/goversioninfo.exe
+resource.syso
+
+# OS Files
+.DS_Store
+thumbs.db

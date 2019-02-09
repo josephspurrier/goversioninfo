@@ -2,7 +2,6 @@ package goversioninfo
 
 import (
 	"bytes"
-	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
@@ -25,7 +24,7 @@ func TestFile1(t *testing.T) {
 }
 
 func testFile(t *testing.T, filename string) {
-	path, _ := filepath.Abs("./testdata/" + filename + ".json")
+	path, _ := filepath.Abs("./testdata/json/" + filename + ".json")
 
 	jsonBytes, err := ioutil.ReadFile(path)
 	if err != nil {
@@ -45,7 +44,7 @@ func testFile(t *testing.T, filename string) {
 	// Write the data to a buffer
 	vi.Walk()
 
-	path2, _ := filepath.Abs("./testdata/" + filename + ".hex")
+	path2, _ := filepath.Abs("./testdata/json/" + filename + ".hex")
 
 	// This is for easily exporting results when the algorithm improves
 	/*path3, _ := filepath.Abs("./testdata/" + filename + ".out")
@@ -72,7 +71,7 @@ func TestWrite64(t *testing.T) {
 func doTestWrite(t *testing.T, arch string) {
 	filename := "cmd"
 
-	path, _ := filepath.Abs("./testdata/" + filename + ".json")
+	path, _ := filepath.Abs("./testdata/json/" + filename + ".json")
 
 	jsonBytes, err := ioutil.ReadFile(path)
 	if err != nil {
@@ -107,7 +106,7 @@ func doTestWrite(t *testing.T, arch string) {
 func TestMalformedJSON(t *testing.T) {
 	filename := "bad"
 
-	path, _ := filepath.Abs("./testdata/" + filename + ".json")
+	path, _ := filepath.Abs("./testdata/json/" + filename + ".json")
 
 	jsonBytes, err := ioutil.ReadFile(path)
 	if err != nil {
@@ -126,7 +125,7 @@ func TestMalformedJSON(t *testing.T) {
 func TestIcon(t *testing.T) {
 	filename := "cmd"
 
-	path, _ := filepath.Abs("./testdata/" + filename + ".json")
+	path, _ := filepath.Abs("./testdata/json/" + filename + ".json")
 
 	jsonBytes, err := ioutil.ReadFile(path)
 	if err != nil {
@@ -141,7 +140,7 @@ func TestIcon(t *testing.T) {
 		t.Error("Could not parse "+filename+".json", err)
 	}
 
-	vi.IconPath = "icon.ico"
+	vi.IconPath = "testdata/icon/icon.ico"
 
 	// Fill the structures with config data
 	vi.Build()
@@ -164,7 +163,7 @@ func TestIcon(t *testing.T) {
 func TestBadIcon(t *testing.T) {
 	filename := "cmd"
 
-	path, _ := filepath.Abs("./testdata/" + filename + ".json")
+	path, _ := filepath.Abs("./testdata/json/" + filename + ".json")
 
 	jsonBytes, err := ioutil.ReadFile(path)
 	if err != nil {
@@ -202,7 +201,7 @@ func TestBadIcon(t *testing.T) {
 func TestTimestamp(t *testing.T) {
 	filename := "cmd"
 
-	path, _ := filepath.Abs("./testdata/" + filename + ".json")
+	path, _ := filepath.Abs("./testdata/json/" + filename + ".json")
 
 	jsonBytes, err := ioutil.ReadFile(path)
 	if err != nil {
@@ -240,7 +239,7 @@ func TestTimestamp(t *testing.T) {
 func TestVersionString(t *testing.T) {
 	filename := "cmd"
 
-	path, _ := filepath.Abs("./testdata/" + filename + ".json")
+	path, _ := filepath.Abs("./testdata/json/" + filename + ".json")
 
 	jsonBytes, err := ioutil.ReadFile(path)
 	if err != nil {
@@ -262,7 +261,7 @@ func TestVersionString(t *testing.T) {
 func TestWriteHex(t *testing.T) {
 	filename := "cmd"
 
-	path, _ := filepath.Abs("./testdata/" + filename + ".json")
+	path, _ := filepath.Abs("./testdata/json/" + filename + ".json")
 
 	jsonBytes, err := ioutil.ReadFile(path)
 	if err != nil {
@@ -291,83 +290,6 @@ func TestWriteHex(t *testing.T) {
 		t.Error("Could not load "+file, err)
 	} else {
 		os.Remove(file)
-	}
-}
-
-// *****************************************************************************
-// Examples
-// *****************************************************************************
-
-func ExampleUseIcon() {
-	filename := "cmd"
-
-	path, _ := filepath.Abs("./testdata/" + filename + ".json")
-
-	jsonBytes, err := ioutil.ReadFile(path)
-	if err != nil {
-		fmt.Println("Could not load "+filename+".json", err)
-	}
-
-	// Create a new container
-	vi := &VersionInfo{}
-
-	// Parse the config
-	if err := vi.ParseJSON(jsonBytes); err != nil {
-		fmt.Println("Could not parse "+filename+".json", err)
-	}
-
-	vi.IconPath = "icon.ico"
-
-	// Fill the structures with config data
-	vi.Build()
-
-	// Write the data to a buffer
-	vi.Walk()
-
-	file := "resource.syso"
-
-	vi.WriteSyso(file, "386")
-
-	_, err = ioutil.ReadFile(file)
-	if err != nil {
-		fmt.Println("Could not load "+file, err)
-	}
-}
-
-func ExampleUseTimestamp() {
-	filename := "cmd"
-
-	path, _ := filepath.Abs("./testdata/" + filename + ".json")
-
-	jsonBytes, err := ioutil.ReadFile(path)
-	if err != nil {
-		fmt.Println("Could not load "+filename+".json", err)
-	}
-
-	// Create a new container
-	vi := &VersionInfo{}
-
-	// Parse the config
-	if err := vi.ParseJSON(jsonBytes); err != nil {
-		fmt.Println("Could not parse "+filename+".json", err)
-	}
-
-	// Write a timestamp even though it is against the spec
-	vi.Timestamp = true
-
-	// Fill the structures with config data
-	vi.Build()
-
-	// Write the data to a buffer
-	vi.Walk()
-
-	file := "resource.syso"
-
-	vi.WriteSyso(file, "386")
-
-	_, err = ioutil.ReadFile(file)
-	if err != nil {
-		fmt.Println("Could not load "+file, err)
 	}
 }
 
