@@ -23,6 +23,8 @@ before_install:
   - go get github.com/akavel/rsrc/coff
   - go get github.com/akavel/rsrc/ico
 script:
+  - echo $TRAVIS_BUILD_DIR
+  - echo $TRAVIS_REPO_SLUG
   # Install binary.
   - go install github.com/josephspurrier/goversioninfo/cmd/goversioninfo
   # Test building.
