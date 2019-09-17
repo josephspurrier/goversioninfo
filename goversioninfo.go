@@ -11,6 +11,7 @@ import (
 	"os"
 	"reflect"
 	"strconv"
+	"strings"
 
 	"github.com/akavel/rsrc/binutil"
 	"github.com/akavel/rsrc/coff"
@@ -230,6 +231,61 @@ func (vi *VersionInfo) WriteSyso(filename string, arch string) error {
 // WriteHex creates a hex file for debugging version info
 func (vi *VersionInfo) WriteHex(filename string) error {
 	return ioutil.WriteFile(filename, vi.Buffer.Bytes(), 0655)
+}
+
+func (vi *VersionInfo) WriteGo(filename, packageName string) error {
+	if len(packageName) == 0 {
+		packageName = "main"
+	}
+
+	out, err := os.Create(filename)
+	if err != nil {
+		return err
+	}
+
+	ffib, err2 := json.MarshalIndent(vi.FixedFileInfo, "\t", "\t")
+	if err2 != nil {
+		return err2
+	}
+
+	sfib, err3 := json.MarshalIndent(vi.StringFileInfo, "\t", "\t")
+	if err3 != nil {
+		return err3
+	}
+
+	vfib, err4 := json.MarshalIndent(vi.VarFileInfo, "\t", "\t")
+	if err4 != nil {
+		return err4
+	}
+
+	replace := "`\" + \"`\" + \"`"
+	str := "`{\n\t"
+	str += `"FixedFileInfo":`
+	str += strings.Replace(string(ffib), "`", replace, -1)
+	str += ",\n\t"
+	str += `"StringFileInfo":` 
+	str += strings.Replace(string(sfib), "`", replace, -1)
+	str += ",\n\t"
+	str += `"VarFileInfo":`
+	str += strings.Replace(string(vfib), "`", replace, -1)
+	str += "\n"
+	str += "}`"
+	fmt.Fprintf(out, `//auto-generated file. Do not edit.
+package %v
+
+import "encoding/json"
+import "github.com/josephspurrier/goversioninfo"
+
+func unmarshalGoVersionInfo(b []byte) goversioninfo.VersionInfo {
+	vi := goversioninfo.VersionInfo{}
+	json.Unmarshal(b, &vi)
+	return vi
+}
+
+var versionInfo = unmarshalGoVersionInfo([]byte(%v))
+`, packageName, string(str))
+
+	return nil
 }
 
 func writeCoff(coff *coff.Coff, fnameout string) error {

@@ -16,6 +16,8 @@ import (
 func main() {
 	flagExample := flag.Bool("example", false, "just dump out an example versioninfo.json to stdout")
 	flagOut := flag.String("o", "resource.syso", "output file name")
+	flagGo := flag.String("go", "versioninfo.go", "go output file name")
+	flagPackage := flag.String("package", "main", "go output package")
 	flagPlatformSpecific := flag.Bool("platform-specific", false, "output i386 and amd64 named resource.syso, ignores -o")
 	flagIcon := flag.String("icon", "", "icon file name")
 	flagManifest := flag.String("manifest", "", "manifest file name")
@@ -172,6 +174,10 @@ func main() {
 
 	// Write the data to a buffer.
 	vi.Walk()
+
+	if *flagGo != "" {
+		vi.WriteGo(*flagGo, *flagPackage)
+	}
 
 	// List of the architectures to output.
 	var archs []string
