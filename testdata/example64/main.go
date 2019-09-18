@@ -1,9 +1,9 @@
-//go:generate goversioninfo -icon=../resource/icon.ico -manifest=../resource/goversioninfo.exe.manifest
+//go:generate goversioninfo -icon=../resource/icon.ico -manifest=../resource/goversioninfo.exe.manifest -go=versioninfo.go
 
 package main
 
 import "fmt"
 
 func main() {
-	fmt.Println("Hello world")
+	fmt.Printf("Hello world %v %v %v\n%v", versionInfo.StringFileInfo.ProductName, versionInfo.StringFileInfo.ProductVersion, versionInfo.FixedFileInfo.FileVersion, versionInfo.StringFileInfo.LegalCopyright)
 }
