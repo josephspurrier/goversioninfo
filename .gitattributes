@@ -1,0 +1,6 @@
+*.sh text eol=lf
+*.hex binary
+*.rc text eol=crlf
+*.manifest text eol=crlf
+*.ico binary
+testdata/go/*.go text eol=lf
