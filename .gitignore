@@ -12,3 +12,6 @@ cmd/goversioninfo/goversioninfo
 # OS Files
 .DS_Store
 thumbs.db
+
+# Environment Files
+.envrc
