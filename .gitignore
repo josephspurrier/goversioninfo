@@ -8,6 +8,8 @@ vendor/
 cmd/goversioninfo/goversioninfo
 *.exe
 *.syso
+versioninfo.go
+/bin
 
 # OS Files
 .DS_Store
