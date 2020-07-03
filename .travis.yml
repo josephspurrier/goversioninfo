@@ -10,11 +10,12 @@ before_install:
   - go get github.com/mattn/goveralls
   - go get golang.org/x/tools/cmd/cover
 script:
+  # Output directory.
   - pwd
   # Install binary.
-  #- go install github.com/$TRAVIS_REPO_SLUG/cmd/goversioninfo
+  - go install github.com/$TRAVIS_REPO_SLUG/cmd/goversioninfo
   # Test building 32 and 64 on Windows.
-  - make test-integration
-  # Run Go tests and send coverage info.
+  - bash $TRAVIS_BUILD_DIR/testdata/bash/build.sh
+  # Run tests and send coverage info.
   - cd $TRAVIS_BUILD_DIR
   - $GOPATH/bin/goveralls -service=travis-ci
