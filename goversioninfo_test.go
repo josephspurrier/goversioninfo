@@ -83,7 +83,7 @@ func testFile(t *testing.T, filename string) {
 		t.Error("Could not load "+path5, err)
 	}
 
-	assert.Equal(t, expected5, gen)
+	assert.Equal(t, string(expected5), string(gen))
 }
 
 func TestWrite32(t *testing.T) {
