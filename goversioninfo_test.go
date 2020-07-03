@@ -10,6 +10,7 @@ import (
 	"testing"
 
 	"github.com/akavel/rsrc/coff"
+	"github.com/stretchr/testify/assert"
 )
 
 // *****************************************************************************
@@ -82,9 +83,7 @@ func testFile(t *testing.T, filename string) {
 		t.Error("Could not load "+path5, err)
 	}
 
-	if !bytes.Equal(gen, expected5) {
-		t.Error("Data does not match " + filename + ".go")
-	}
+	assert.Equal(t, expected5, gen)
 }
 
 func TestWrite32(t *testing.T) {
