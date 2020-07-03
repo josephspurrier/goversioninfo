@@ -11,6 +11,7 @@ import (
 	"os"
 	"reflect"
 	"strconv"
+	"strings"
 
 	"github.com/akavel/rsrc/binutil"
 	"github.com/akavel/rsrc/coff"
@@ -160,7 +161,7 @@ func (t Translation) getTranslation() string {
 // IO Methods
 // *****************************************************************************
 
-// Walk writes the data buffer with hexidecimal data from the structs
+// Walk writes the data buffer with hexadecimal data from the structs
 func (vi *VersionInfo) Walk() {
 	// Create a buffer
 	var b bytes.Buffer
@@ -192,7 +193,7 @@ func (vi *VersionInfo) WriteSyso(filename string, arch string) error {
 	// Create a new RSRC section
 	rsrc := coff.NewRSRC()
 
-	// Set the architechture
+	// Set the architecture
 	err := rsrc.Arch(arch)
 	if err != nil {
 		return err
@@ -230,6 +231,66 @@ func (vi *VersionInfo) WriteSyso(filename string, arch string) error {
 // WriteHex creates a hex file for debugging version info
 func (vi *VersionInfo) WriteHex(filename string) error {
 	return ioutil.WriteFile(filename, vi.Buffer.Bytes(), 0655)
+}
+
+// WriteGo creates a Go file that contains the version info so you can access
+// it in the application
+func (vi *VersionInfo) WriteGo(filename, packageName string) error {
+	if len(packageName) == 0 {
+		packageName = "main"
+	}
+
+	out, err := os.Create(filename)
+	if err != nil {
+		return err
+	}
+
+	ffib, err := json.MarshalIndent(vi.FixedFileInfo, "\t", "\t")
+	if err != nil {
+		return err
+	}
+
+	sfib, err := json.MarshalIndent(vi.StringFileInfo, "\t", "\t")
+	if err != nil {
+		return err
+	}
+
+	vfib, err := json.MarshalIndent(vi.VarFileInfo, "\t", "\t")
+	if err != nil {
+		return err
+	}
+
+	replace := "`\" + \"`\" + \"`"
+	str := "`{\n\t"
+	str += `"FixedFileInfo":`
+	str += strings.Replace(string(ffib), "`", replace, -1)
+	str += ",\n\t"
+	str += `"StringFileInfo":`
+	str += strings.Replace(string(sfib), "`", replace, -1)
+	str += ",\n\t"
+	str += `"VarFileInfo":`
+	str += strings.Replace(string(vfib), "`", replace, -1)
+	str += "\n"
+	str += "}`"
+	fmt.Fprintf(out, `// Auto-generated file by goversioninfo. Do not edit.
+package %v
+
+import (
+	"encoding/json"
+
+	"github.com/josephspurrier/goversioninfo"
+)
+
+func unmarshalGoVersionInfo(b []byte) goversioninfo.VersionInfo {
+	vi := goversioninfo.VersionInfo{}
+	json.Unmarshal(b, &vi)
+	return vi
+}
+
+var versionInfo = unmarshalGoVersionInfo([]byte(%v))
+`, packageName, string(str))
+
+	return nil
 }
 
 func writeCoff(coff *coff.Coff, fnameout string) error {

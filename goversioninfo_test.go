@@ -7,9 +7,12 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"runtime"
+	"strings"
 	"testing"
 
 	"github.com/akavel/rsrc/coff"
+	"github.com/stretchr/testify/assert"
 )
 
 // *****************************************************************************
@@ -27,9 +30,7 @@ func testFile(t *testing.T, filename string) {
 	path, _ := filepath.Abs("./testdata/json/" + filename + ".json")
 
 	jsonBytes, err := ioutil.ReadFile(path)
-	if err != nil {
-		t.Error("Could not load "+filename+".json", err)
-	}
+	assert.NoError(t, err)
 
 	// Create a new container
 	vi := &VersionInfo{}
@@ -51,13 +52,35 @@ func testFile(t *testing.T, filename string) {
 	ioutil.WriteFile(path3, vi.Buffer.Bytes(), 0655)*/
 
 	expected, err := ioutil.ReadFile(path2)
-	if err != nil {
-		t.Error("Could not load "+filename+".hex", err)
-	}
+	assert.NoError(t, err)
 
 	if !bytes.Equal(vi.Buffer.Bytes(), expected) {
 		t.Error("Data does not match " + filename + ".hex")
 	}
+
+	// Test the Go file generation.
+	tmpdir, err := ioutil.TempDir("", "generate_go")
+	assert.NoError(t, err)
+	defer os.RemoveAll(tmpdir)
+	path4 := filepath.Join(tmpdir, filename+".go")
+	err = vi.WriteGo(path4, "")
+	assert.NoError(t, err)
+
+	gen, err := ioutil.ReadFile(path4)
+	assert.NoError(t, err)
+
+	path5, _ := filepath.Abs("./testdata/gofile/" + filename + ".go")
+	expected5, err := ioutil.ReadFile(path5)
+	if err != nil {
+		t.Error("Could not load "+path5, err)
+	}
+
+	// Handle newlines.
+	if runtime.GOOS == "windows" {
+		expected5 = []byte(strings.ReplaceAll(string(expected5), "\r\n", "\n"))
+	}
+
+	assert.Equal(t, string(expected5), string(gen))
 }
 
 func TestWrite32(t *testing.T) {
@@ -74,9 +97,7 @@ func doTestWrite(t *testing.T, arch string) {
 	path, _ := filepath.Abs("./testdata/json/" + filename + ".json")
 
 	jsonBytes, err := ioutil.ReadFile(path)
-	if err != nil {
-		t.Error("Could not load "+filename+".json", err)
-	}
+	assert.NoError(t, err)
 
 	// Create a new container
 	vi := &VersionInfo{}
@@ -92,21 +113,15 @@ func doTestWrite(t *testing.T, arch string) {
 	vi.Walk()
 
 	tmpdir, err := ioutil.TempDir("", "resource")
-	if err != nil {
-		t.Error("Could not create temp dir", err)
-	}
+	assert.NoError(t, err)
 	defer os.RemoveAll(tmpdir)
 	file := filepath.Join(tmpdir, "resource.syso")
 
 	err = vi.WriteSyso(file, arch)
-	if err != nil {
-		t.Errorf("Error writing syso: %v", err)
-	}
+	assert.NoError(t, err)
 
 	_, err = ioutil.ReadFile(file)
-	if err != nil {
-		t.Error("Could not load "+file, err)
-	}
+	assert.NoError(t, err)
 }
 
 func TestMalformedJSON(t *testing.T) {
@@ -115,9 +130,7 @@ func TestMalformedJSON(t *testing.T) {
 	path, _ := filepath.Abs("./testdata/json/" + filename + ".json")
 
 	jsonBytes, err := ioutil.ReadFile(path)
-	if err != nil {
-		t.Error("Could not load "+filename+".json", err)
-	}
+	assert.NoError(t, err)
 
 	// Create a new container
 	vi := &VersionInfo{}
@@ -134,9 +147,7 @@ func TestIcon(t *testing.T) {
 	path, _ := filepath.Abs("./testdata/json/" + filename + ".json")
 
 	jsonBytes, err := ioutil.ReadFile(path)
-	if err != nil {
-		t.Error("Could not load "+filename+".json", err)
-	}
+	assert.NoError(t, err)
 
 	// Create a new container
 	vi := &VersionInfo{}
@@ -155,21 +166,15 @@ func TestIcon(t *testing.T) {
 	vi.Walk()
 
 	tmpdir, err := ioutil.TempDir("", "resource")
-	if err != nil {
-		t.Error("Could not create temp dir", err)
-	}
+	assert.NoError(t, err)
 	defer os.RemoveAll(tmpdir)
 	file := filepath.Join(tmpdir, "resource.syso")
 
 	err = vi.WriteSyso(file, "386")
-	if err != nil {
-		t.Errorf("Error writing syso: %v", err)
-	}
+	assert.NoError(t, err)
 
 	_, err = ioutil.ReadFile(file)
-	if err != nil {
-		t.Error("Could not load "+file, err)
-	}
+	assert.NoError(t, err)
 }
 
 func TestBadIcon(t *testing.T) {
@@ -178,9 +183,7 @@ func TestBadIcon(t *testing.T) {
 	path, _ := filepath.Abs("./testdata/json/" + filename + ".json")
 
 	jsonBytes, err := ioutil.ReadFile(path)
-	if err != nil {
-		t.Error("Could not load "+filename+".json", err)
-	}
+	assert.NoError(t, err)
 
 	// Create a new container
 	vi := &VersionInfo{}
@@ -199,9 +202,7 @@ func TestBadIcon(t *testing.T) {
 	vi.Walk()
 
 	tmpdir, err := ioutil.TempDir("", "resource")
-	if err != nil {
-		t.Error("Could not create temp dir", err)
-	}
+	assert.NoError(t, err)
 	defer os.RemoveAll(tmpdir)
 	file := filepath.Join(tmpdir, "resource.syso")
 
@@ -222,9 +223,7 @@ func TestTimestamp(t *testing.T) {
 	path, _ := filepath.Abs("./testdata/json/" + filename + ".json")
 
 	jsonBytes, err := ioutil.ReadFile(path)
-	if err != nil {
-		t.Error("Could not load "+filename+".json", err)
-	}
+	assert.NoError(t, err)
 
 	// Create a new container
 	vi := &VersionInfo{}
@@ -243,21 +242,15 @@ func TestTimestamp(t *testing.T) {
 	vi.Walk()
 
 	tmpdir, err := ioutil.TempDir("", "resource")
-	if err != nil {
-		t.Error("Could not create temp dir", err)
-	}
+	assert.NoError(t, err)
 	defer os.RemoveAll(tmpdir)
 	file := filepath.Join(tmpdir, "resource.syso")
 
 	err = vi.WriteSyso(file, "386")
-	if err != nil {
-		t.Errorf("Error writing syso: %v", err)
-	}
+	assert.NoError(t, err)
 
 	_, err = ioutil.ReadFile(file)
-	if err != nil {
-		t.Error("Could not load "+file, err)
-	}
+	assert.NoError(t, err)
 }
 
 func TestVersionString(t *testing.T) {
@@ -266,9 +259,7 @@ func TestVersionString(t *testing.T) {
 	path, _ := filepath.Abs("./testdata/json/" + filename + ".json")
 
 	jsonBytes, err := ioutil.ReadFile(path)
-	if err != nil {
-		t.Error("Could not load "+filename+".json", err)
-	}
+	assert.NoError(t, err)
 
 	// Create a new container
 	vi := &VersionInfo{}
@@ -288,9 +279,7 @@ func TestWriteHex(t *testing.T) {
 	path, _ := filepath.Abs("./testdata/json/" + filename + ".json")
 
 	jsonBytes, err := ioutil.ReadFile(path)
-	if err != nil {
-		t.Error("Could not load "+filename+".json", err)
-	}
+	assert.NoError(t, err)
 
 	// Create a new container
 	vi := &VersionInfo{}
@@ -306,21 +295,15 @@ func TestWriteHex(t *testing.T) {
 	vi.Walk()
 
 	tmpdir, err := ioutil.TempDir("", "resource")
-	if err != nil {
-		t.Error("Could not create temp dir", err)
-	}
+	assert.NoError(t, err)
 	defer os.RemoveAll(tmpdir)
 	file := filepath.Join(tmpdir, "resource.syso")
 
 	err = vi.WriteHex(file)
-	if err != nil {
-		t.Errorf("Error writing hex: %v", err)
-	}
+	assert.NoError(t, err)
 
 	_, err = ioutil.ReadFile(file)
-	if err != nil {
-		t.Error("Could not load "+file, err)
-	}
+	assert.NoError(t, err)
 }
 
 func testdatatr2Uint32(t *testing.T) {

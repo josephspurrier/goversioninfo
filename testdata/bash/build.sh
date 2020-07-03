@@ -18,3 +18,12 @@ GOOS=windows GOARCH=amd64 go build
 rm example64.exe
 rm resource.syso
 cd ../../
+
+# Test Windows 64 with Go output file.
+cd testdata/example64-gofile
+GOOS=windows GOARCH=amd64 go generate
+GOOS=windows GOARCH=amd64 go build
+rm example64-gofile.exe
+rm resource.syso
+rm versioninfo.go
+cd ../../
