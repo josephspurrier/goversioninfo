@@ -4,7 +4,6 @@
     type="win32"
     name="Github.com.JosephSpurrier.GoVersionInfo"
     version="1.0.0.0"
-    language="*"
     processorArchitecture="*"/>
  <trustInfo xmlns="urn:schemas-microsoft-com:asm.v3">
    <security>

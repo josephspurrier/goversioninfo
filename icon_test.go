@@ -1,7 +1,9 @@
 package goversioninfo
 
 import (
+	"io/ioutil"
 	"os"
+	"path/filepath"
 	"runtime"
 	"testing"
 )
@@ -9,13 +11,18 @@ import (
 func TestIconReleaseFileHandle(t *testing.T) {
 	icoPath := "testdata/resource/icon.ico"
 	icoPath2 := "testdata/resource/icon2.ico"
-	outPath := "resource.syso"
+	tmpdir, err := ioutil.TempDir("", "resource")
+	if err != nil {
+		t.Error("Could not create temp dir", err)
+	}
+	defer os.RemoveAll(tmpdir)
+	outPath := filepath.Join(tmpdir, "resource.syso")
 	vi := &VersionInfo{}
 	vi.IconPath = icoPath
 
 	vi.Build()
 	vi.Walk()
-	err := vi.WriteSyso(outPath, runtime.GOARCH)
+	err = vi.WriteSyso(outPath, runtime.GOARCH)
 	if err != nil {
 		t.Errorf("Unexpected error writing resource: %v", err)
 	}
