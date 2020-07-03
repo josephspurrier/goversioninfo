@@ -4,3 +4,5 @@
 *.manifest text eol=crlf
 *.ico binary
 testdata/go/*.go text eol=lf
+go.mod text eol=lf
+go.sum text eol=lf
