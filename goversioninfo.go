@@ -161,7 +161,7 @@ func (t Translation) getTranslation() string {
 // IO Methods
 // *****************************************************************************
 
-// Walk writes the data buffer with hexidecimal data from the structs
+// Walk writes the data buffer with hexadecimal data from the structs
 func (vi *VersionInfo) Walk() {
 	// Create a buffer
 	var b bytes.Buffer
@@ -193,7 +193,7 @@ func (vi *VersionInfo) WriteSyso(filename string, arch string) error {
 	// Create a new RSRC section
 	rsrc := coff.NewRSRC()
 
-	// Set the architechture
+	// Set the architecture
 	err := rsrc.Arch(arch)
 	if err != nil {
 		return err
@@ -233,6 +233,8 @@ func (vi *VersionInfo) WriteHex(filename string) error {
 	return ioutil.WriteFile(filename, vi.Buffer.Bytes(), 0655)
 }
 
+// WriteGo creates a Go file that contains the version info so you can access
+// it in the application
 func (vi *VersionInfo) WriteGo(filename, packageName string) error {
 	if len(packageName) == 0 {
 		packageName = "main"
@@ -243,19 +245,19 @@ func (vi *VersionInfo) WriteGo(filename, packageName string) error {
 		return err
 	}
 
-	ffib, err2 := json.MarshalIndent(vi.FixedFileInfo, "\t", "\t")
-	if err2 != nil {
-		return err2
+	ffib, err := json.MarshalIndent(vi.FixedFileInfo, "\t", "\t")
+	if err != nil {
+		return err
 	}
 
-	sfib, err3 := json.MarshalIndent(vi.StringFileInfo, "\t", "\t")
-	if err3 != nil {
-		return err3
+	sfib, err := json.MarshalIndent(vi.StringFileInfo, "\t", "\t")
+	if err != nil {
+		return err
 	}
 
-	vfib, err4 := json.MarshalIndent(vi.VarFileInfo, "\t", "\t")
-	if err4 != nil {
-		return err4
+	vfib, err := json.MarshalIndent(vi.VarFileInfo, "\t", "\t")
+	if err != nil {
+		return err
 	}
 
 	replace := "`\" + \"`\" + \"`"
@@ -263,18 +265,21 @@ func (vi *VersionInfo) WriteGo(filename, packageName string) error {
 	str += `"FixedFileInfo":`
 	str += strings.Replace(string(ffib), "`", replace, -1)
 	str += ",\n\t"
-	str += `"StringFileInfo":` 
+	str += `"StringFileInfo":`
 	str += strings.Replace(string(sfib), "`", replace, -1)
 	str += ",\n\t"
 	str += `"VarFileInfo":`
 	str += strings.Replace(string(vfib), "`", replace, -1)
 	str += "\n"
 	str += "}`"
-	fmt.Fprintf(out, `//auto-generated file. Do not edit.
+	fmt.Fprintf(out, `// Auto-generated file by goversioninfo. Do not edit.
 package %v
 
-import "encoding/json"
-import "github.com/josephspurrier/goversioninfo"
+import (
+	"encoding/json"
+
+	"github.com/josephspurrier/goversioninfo"
+)
 
 func unmarshalGoVersionInfo(b []byte) goversioninfo.VersionInfo {
 	vi := goversioninfo.VersionInfo{}

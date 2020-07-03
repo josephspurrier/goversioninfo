@@ -1,8 +1,11 @@
-//auto-generated file. Do not edit.
+// Auto-generated file by goversioninfo. Do not edit.
 package main
 
-import "encoding/json"
-import "github.com/josephspurrier/goversioninfo"
+import (
+	"encoding/json"
+
+	"github.com/josephspurrier/goversioninfo"
+)
 
 func unmarshalGoVersionInfo(b []byte) goversioninfo.VersionInfo {
 	vi := goversioninfo.VersionInfo{}
@@ -33,12 +36,12 @@ var versionInfo = unmarshalGoVersionInfo([]byte(`{
 	"StringFileInfo":{
 		"Comments": "",
 		"CompanyName": "Microsoft Corporation",
-		"FileDescription": "Windows Command Processor",
+		"FileDescription": "Windows Control Panel",
 		"FileVersion": "6.3.9600.16384 (winblue_rtm.130821-1623)",
-		"InternalName": "cmd",
+		"InternalName": "Control",
 		"LegalCopyright": "© Microsoft Corporation. All rights reserved.",
 		"LegalTrademarks": "",
-		"OriginalFilename": "Cmd.Exe",
+		"OriginalFilename": "CONTROL.EXE",
 		"PrivateBuild": "",
 		"ProductName": "Microsoft® Windows® Operating System",
 		"ProductVersion": "6.3.9600.16384",

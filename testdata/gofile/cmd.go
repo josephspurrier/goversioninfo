@@ -1,8 +1,11 @@
-//auto-generated file. Do not edit.
+// Auto-generated file by goversioninfo. Do not edit.
 package main
 
-import "encoding/json"
-import "github.com/josephspurrier/goversioninfo"
+import (
+	"encoding/json"
+
+	"github.com/josephspurrier/goversioninfo"
+)
 
 func unmarshalGoVersionInfo(b []byte) goversioninfo.VersionInfo {
 	vi := goversioninfo.VersionInfo{}
@@ -16,13 +19,13 @@ var versionInfo = unmarshalGoVersionInfo([]byte(`{
 			"Major": 6,
 			"Minor": 3,
 			"Patch": 9600,
-			"Build": 17284
+			"Build": 16384
 		},
 		"ProductVersion": {
 			"Major": 6,
 			"Minor": 3,
 			"Patch": 9600,
-			"Build": 17284
+			"Build": 16384
 		},
 		"FileFlagsMask": "3f",
 		"FileFlags": "",
@@ -33,15 +36,15 @@ var versionInfo = unmarshalGoVersionInfo([]byte(`{
 	"StringFileInfo":{
 		"Comments": "",
 		"CompanyName": "Microsoft Corporation",
-		"FileDescription": "Windows Explorer",
-		"FileVersion": "6.3.9600.17284 (winblue_r2.140822-1915)",
-		"InternalName": "explorer",
+		"FileDescription": "Windows Command Processor",
+		"FileVersion": "6.3.9600.16384 (winblue_rtm.130821-1623)",
+		"InternalName": "cmd",
 		"LegalCopyright": "© Microsoft Corporation. All rights reserved.",
 		"LegalTrademarks": "",
-		"OriginalFilename": "EXPLORER.EXE",
+		"OriginalFilename": "Cmd.Exe",
 		"PrivateBuild": "",
 		"ProductName": "Microsoft® Windows® Operating System",
-		"ProductVersion": "6.3.9600.17284",
+		"ProductVersion": "6.3.9600.16384",
 		"SpecialBuild": ""
 	},
 	"VarFileInfo":{

@@ -59,22 +59,27 @@ func testFile(t *testing.T, filename string) {
 		t.Error("Data does not match " + filename + ".hex")
 	}
 
+	// Test the Go file generation.
 	tmpdir, err := ioutil.TempDir("", "generate_go")
 	if err != nil {
 		t.Error("Could not create temp dir", err)
 	}
 	defer os.RemoveAll(tmpdir)
-	path4 := filepath.Join(tmpdir, filename + ".go")
-	vi.WriteGo(path4, "")
-	gen, err4 := ioutil.ReadFile(path4)
-	if err4 != nil {
-		t.Error("Could not load " + path4, err4)
+	path4 := filepath.Join(tmpdir, filename+".go")
+	err = vi.WriteGo(path4, "")
+	if err != nil {
+		t.Error("Could not write "+path4, err)
 	}
 
-	path5, _ := filepath.Abs("./testdata/go/" + filename + ".go")
-	expected5, err5 := ioutil.ReadFile(path5)
-	if err5 != nil {
-		t.Error("Could not load " + path5, err5)
+	gen, err := ioutil.ReadFile(path4)
+	if err != nil {
+		t.Error("Could not load "+path4, err)
+	}
+
+	path5, _ := filepath.Abs("./testdata/gofile/" + filename + ".go")
+	expected5, err := ioutil.ReadFile(path5)
+	if err != nil {
+		t.Error("Could not load "+path5, err)
 	}
 
 	if !bytes.Equal(gen, expected5) {

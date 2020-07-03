@@ -1,8 +1,11 @@
-//auto-generated file. Do not edit.
+// Auto-generated file by goversioninfo. Do not edit.
 package main
 
-import "encoding/json"
-import "github.com/josephspurrier/goversioninfo"
+import (
+	"encoding/json"
+
+	"github.com/josephspurrier/goversioninfo"
+)
 
 func unmarshalGoVersionInfo(b []byte) goversioninfo.VersionInfo {
 	vi := goversioninfo.VersionInfo{}
