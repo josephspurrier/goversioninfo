@@ -113,7 +113,12 @@ func doTestWrite(t *testing.T, arch string) {
 	// Write the data to a buffer
 	vi.Walk()
 
-	file := "resource.syso"
+	tmpdir, err := ioutil.TempDir("", "resource")
+	if err != nil {
+		t.Error("Could not create temp dir", err)
+	}
+	defer os.RemoveAll(tmpdir)
+	file := filepath.Join(tmpdir, "resource.syso")
 
 	err = vi.WriteSyso(file, arch)
 	if err != nil {
@@ -123,8 +128,6 @@ func doTestWrite(t *testing.T, arch string) {
 	_, err = ioutil.ReadFile(file)
 	if err != nil {
 		t.Error("Could not load "+file, err)
-	} else {
-		os.Remove(file)
 	}
 }
 
@@ -173,7 +176,12 @@ func TestIcon(t *testing.T) {
 	// Write the data to a buffer
 	vi.Walk()
 
-	file := "resource.syso"
+	tmpdir, err := ioutil.TempDir("", "resource")
+	if err != nil {
+		t.Error("Could not create temp dir", err)
+	}
+	defer os.RemoveAll(tmpdir)
+	file := filepath.Join(tmpdir, "resource.syso")
 
 	err = vi.WriteSyso(file, "386")
 	if err != nil {
@@ -183,8 +191,6 @@ func TestIcon(t *testing.T) {
 	_, err = ioutil.ReadFile(file)
 	if err != nil {
 		t.Error("Could not load "+file, err)
-	} else {
-		os.Remove(file)
 	}
 }
 
@@ -214,7 +220,12 @@ func TestBadIcon(t *testing.T) {
 	// Write the data to a buffer
 	vi.Walk()
 
-	file := "resource.syso"
+	tmpdir, err := ioutil.TempDir("", "resource")
+	if err != nil {
+		t.Error("Could not create temp dir", err)
+	}
+	defer os.RemoveAll(tmpdir)
+	file := filepath.Join(tmpdir, "resource.syso")
 
 	err = vi.WriteSyso(file, "386")
 	if err == nil {
@@ -222,9 +233,7 @@ func TestBadIcon(t *testing.T) {
 	}
 
 	_, err = ioutil.ReadFile(file)
-	if err != nil {
-		os.Remove(file)
-	} else {
+	if err == nil {
 		t.Error("File should not exist "+file, err)
 	}
 }
@@ -255,7 +264,12 @@ func TestTimestamp(t *testing.T) {
 	// Write the data to a buffer
 	vi.Walk()
 
-	file := "resource.syso"
+	tmpdir, err := ioutil.TempDir("", "resource")
+	if err != nil {
+		t.Error("Could not create temp dir", err)
+	}
+	defer os.RemoveAll(tmpdir)
+	file := filepath.Join(tmpdir, "resource.syso")
 
 	err = vi.WriteSyso(file, "386")
 	if err != nil {
@@ -265,8 +279,6 @@ func TestTimestamp(t *testing.T) {
 	_, err = ioutil.ReadFile(file)
 	if err != nil {
 		t.Error("Could not load "+file, err)
-	} else {
-		os.Remove(file)
 	}
 }
 
@@ -315,7 +327,12 @@ func TestWriteHex(t *testing.T) {
 	// Write the data to a buffer
 	vi.Walk()
 
-	file := "resource.syso"
+	tmpdir, err := ioutil.TempDir("", "resource")
+	if err != nil {
+		t.Error("Could not create temp dir", err)
+	}
+	defer os.RemoveAll(tmpdir)
+	file := filepath.Join(tmpdir, "resource.syso")
 
 	err = vi.WriteHex(file)
 	if err != nil {
@@ -325,8 +342,6 @@ func TestWriteHex(t *testing.T) {
 	_, err = ioutil.ReadFile(file)
 	if err != nil {
 		t.Error("Could not load "+file, err)
-	} else {
-		os.Remove(file)
 	}
 }
 
