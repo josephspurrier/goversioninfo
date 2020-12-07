@@ -187,7 +187,7 @@ func main() {
 		}
 	}
 
-	// Loop through each artchitecture.
+	// Loop through each architecture.
 	for _, item := range archs {
 		// Create the file using the -o argument.
 		fileout := *flagOut

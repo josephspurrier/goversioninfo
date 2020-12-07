@@ -5,6 +5,7 @@ import (
 	"encoding/binary"
 	"os"
 
+	"github.com/akavel/rsrc/binutil"
 	"github.com/akavel/rsrc/coff"
 	"github.com/akavel/rsrc/ico"
 )
@@ -53,6 +54,10 @@ func (group gRPICONDIR) Size() int64 {
 	return int64(binary.Size(group.ICONDIR) + len(group.Entries)*binary.Size(group.Entries[0]))
 }
 
+func (group gRPICONDIR) AlignedSize() int64 {
+	return binutil.Align(group.Size())
+}
+
 type gRPICONDIRENTRY struct {
 	ico.IconDirEntryCommon
 	ID uint16
@@ -93,11 +98,19 @@ func addIcon(coff *coff.Coff, fname string, newID <-chan uint16) error {
 	return nil
 }
 
-func bufferIcon(f *os.File, offset int64, size int) (*bytes.Reader, error) {
+type AlignedReader struct {
+	*bytes.Reader
+}
+
+func (r AlignedReader) AlignedSize() int64 {
+	return binutil.Align(r.Size())
+}
+
+func bufferIcon(f *os.File, offset int64, size int) (coff.Sizer, error) {
 	data := make([]byte, size)
 	_, err := f.ReadAt(data, offset)
 	if err != nil {
 		return nil, err
 	}
-	return bytes.NewReader(data), nil
+	return AlignedReader{Reader: bytes.NewReader(data)}, nil
 }
