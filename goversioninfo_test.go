@@ -91,6 +91,14 @@ func TestWrite64(t *testing.T) {
 	doTestWrite(t, "amd64")
 }
 
+func TestWriteArm32(t *testing.T) {
+	doTestWrite(t, "arm")
+}
+
+func TestWriteArm64(t *testing.T) {
+	doTestWrite(t, "arm64")
+}
+
 func doTestWrite(t *testing.T, arch string) {
 	filename := "cmd"
 

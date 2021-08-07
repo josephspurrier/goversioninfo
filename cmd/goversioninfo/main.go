@@ -18,7 +18,7 @@ func main() {
 	flagOut := flag.String("o", "resource.syso", "output file name")
 	flagGo := flag.String("gofile", "", "Go output file name (optional)")
 	flagPackage := flag.String("gofilepackage", "main", "Go output package name (optional, requires parameter: 'gofile')")
-	flagPlatformSpecific := flag.Bool("platform-specific", false, "output i386 and amd64 named resource.syso, ignores -o")
+	flagPlatformSpecific := flag.Bool("platform-specific", false, "output i386, amd64, arm and arm64 named resource.syso, ignores -o")
 	flagIcon := flag.String("icon", "", "icon file name")
 	flagManifest := flag.String("manifest", "", "manifest file name")
 
@@ -39,6 +39,7 @@ func main() {
 	flagCharset := flag.Int("charset", 0, "charset ID")
 
 	flag64 := flag.Bool("64", false, "generate 64-bit binaries")
+	flagarm := flag.Bool("arm", false, "generate arm binaries")
 
 	flagVerMajor := flag.Int("ver-major", -1, "FileVersion.Major")
 	flagVerMinor := flag.Int("ver-minor", -1, "FileVersion.Minor")
@@ -185,13 +186,22 @@ func main() {
 
 	// If platform specific, then output all the architectures for Windows.
 	if flagPlatformSpecific != nil && *flagPlatformSpecific {
-		archs = []string{"386", "amd64"}
+		archs = []string{"386", "amd64", "arm", "arm64"}
 	} else {
-		// Set the architecture, defaulted to 32-bit.
-		archs = []string{"386"} // 32-bit
-		if flag64 != nil && *flag64 {
-			archs = []string{"amd64"} // 64-bit
+		// Set the architecture, defaulted to 386(32-bit x86).
+		archs = []string{"386"} // 386(32-bit x86)
+		if flagarm != nil && *flagarm {
+			if flag64 != nil && *flag64 {
+				archs = []string{"arm64"} // arm64(64-bit arm64)
+			} else {
+				archs = []string{"arm"} // arm(32-bit arm)
+			}
+		} else {
+			if flag64 != nil && *flag64 {
+				archs = []string{"amd64"} // amd64(64-bit x86_64)
+			}
 		}
+
 	}
 
 	// Loop through each artchitecture.
