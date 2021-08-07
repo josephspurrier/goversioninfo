@@ -58,6 +58,7 @@ Complete list of the flags for goversioninfo:
   -trademark="": StringFileInfo.LegalTrademarks
   -translation=0: translation ID
   -64:false: generate 64-bit binaries on true
+  -arm:false: generate ARM binaries on true
   -ver-major=-1: FileVersion.Major
   -ver-minor=-1: FileVersion.Minor
   -ver-patch=-1: FileVersion.Patch
