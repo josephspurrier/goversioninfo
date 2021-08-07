@@ -18,7 +18,7 @@ func main() {
 	flagOut := flag.String("o", "resource.syso", "output file name")
 	flagGo := flag.String("gofile", "", "Go output file name (optional)")
 	flagPackage := flag.String("gofilepackage", "main", "Go output package name (optional, requires parameter: 'gofile')")
-	flagPlatformSpecific := flag.Bool("platform-specific", false, "output i386,amd64,arm and arm64 named resource.syso, ignores -o")
+	flagPlatformSpecific := flag.Bool("platform-specific", false, "output i386, amd64, arm and arm64 named resource.syso, ignores -o")
 	flagIcon := flag.String("icon", "", "icon file name")
 	flagManifest := flag.String("manifest", "", "manifest file name")
 
