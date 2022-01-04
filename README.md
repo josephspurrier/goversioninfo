@@ -46,6 +46,7 @@ Complete list of the flags for goversioninfo:
   -icon="": icon file name
   -internal-name="": StringFileInfo.InternalName
   -manifest="": manifest file name
+  -skip-versioninfo=false: skip version info reading on true, allows setting just icon
   -o="resource.syso": output file name
   -gofile="": Go output file name (optional) - generates a Go file to access version information internally
   -gofilepackage="main": Go output package name (optional, requires parameter: 'gofile')
