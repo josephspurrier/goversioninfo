@@ -21,6 +21,7 @@ func main() {
 	flagPlatformSpecific := flag.Bool("platform-specific", false, "output i386, amd64, arm and arm64 named resource.syso, ignores -o")
 	flagIcon := flag.String("icon", "", "icon file name")
 	flagManifest := flag.String("manifest", "", "manifest file name")
+	flagSkipVersion := flag.Bool("skip-versioninfo", false, "skip version info")
 
 	flagComment := flag.String("comment", "", "StringFileInfo.Comments")
 	flagCompany := flag.String("company", "", "StringFileInfo.CompanyName")
@@ -65,30 +66,34 @@ func main() {
 	if configFile == "" {
 		configFile = "versioninfo.json"
 	}
-	var err error
-	var input = io.ReadCloser(os.Stdin)
-	if configFile != "-" {
-		if input, err = os.Open(configFile); err != nil {
-			log.Printf("Cannot open %q: %v", configFile, err)
-			os.Exit(1)
-		}
-	}
-
-	// Read the config file.
-	jsonBytes, err := ioutil.ReadAll(input)
-	input.Close()
-	if err != nil {
-		log.Printf("Error reading %q: %v", configFile, err)
-		os.Exit(1)
-	}
 
 	// Create a new container.
 	vi := &goversioninfo.VersionInfo{}
 
-	// Parse the config.
-	if err := vi.ParseJSON(jsonBytes); err != nil {
-		log.Printf("Could not parse the .json file: %v", err)
-		os.Exit(2)
+	if !*flagSkipVersion {
+		var err error
+		var input = io.ReadCloser(os.Stdin)
+		if configFile != "-" {
+			if input, err = os.Open(configFile); err != nil {
+				log.Printf("Cannot open %q: %v", configFile, err)
+				os.Exit(1)
+			}
+		}
+
+		// Read the config file.
+		jsonBytes, err := ioutil.ReadAll(input)
+		input.Close()
+		if err != nil {
+			log.Printf("Error reading %q: %v", configFile, err)
+			os.Exit(1)
+		}
+
+		// Parse the config.
+		if err := vi.ParseJSON(jsonBytes); err != nil {
+			log.Printf("Could not parse the .json file: %v", err)
+			os.Exit(2)
+		}
+
 	}
 
 	// Override from flags.
