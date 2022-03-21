@@ -3,6 +3,10 @@
 # Exit on error.
 set -e
 
+# Install the binary.
+echo $PATH
+go install cmd/goversioninfo/main.go
+
 # Test Windows 32.
 cd testdata/example32
 GOOS=windows GOARCH=386 go generate
