@@ -4,8 +4,8 @@
 set -e
 
 # Install the binary.
-echo $PATH
-go install cmd/goversioninfo/main.go
+set GOPATH=$GOPATH:$HOME/go/bin
+go build -o $HOME/go/bin/goversioninfo cmd/goversioninfo/main.go
 
 # Test Windows 32.
 cd testdata/example32
