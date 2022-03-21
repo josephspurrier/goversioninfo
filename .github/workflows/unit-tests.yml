@@ -9,7 +9,7 @@ jobs:
     # Run the job on these Go versions and operating systems.
     strategy:
       matrix:
-        go-version: [1.17.x]
+        go-version: [1.17.x, 1.18.x]
         # os: [ubuntu-latest, macos-latest, windows-latest] # Don't use, spends a lot of cycles.
         os: [ubuntu-latest]
       # Don't cancel all jobs if one fails.
