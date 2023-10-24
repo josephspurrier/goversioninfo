@@ -381,6 +381,42 @@ func TestWriteCoff(t *testing.T) {
 	}
 }
 
+func TestNewFileVersion(t *testing.T) {
+	cases := []struct {
+		in  string
+		out FileVersion
+		err string
+	}{
+		// Correct.
+		{"1.2.3", FileVersion{1, 2, 3, 0}, ""},
+		{"1.2.3.a", FileVersion{1, 2, 3, 0}, ""},
+		{"1.2.3.4", FileVersion{1, 2, 3, 4}, ""},
+		{"1.2.3.4-RC.1", FileVersion{1, 2, 3, 4}, ""},
+		{"1.2.3.4 (final)", FileVersion{1, 2, 3, 4}, ""},
+		{"6.3.9600.17284 (aaa.140822-1915)", FileVersion{6, 3, 9600, 17284}, ""},
+
+		// Unexpected format.
+		{"1.2", FileVersion{}, "version expected to start from x.y.z"},
+		{"1.3.a", FileVersion{}, "version expected to start from x.y.z"},
+		{"v1.2.3", FileVersion{}, "version expected to start from x.y.z"},
+
+		// Any way to check Atoi errors except of overflow?
+		{"1.1.1.9223372036854775808", FileVersion{}, "9223372036854775808"},
+	}
+	for i, c := range cases {
+		got, err := NewFileVersion(c.in)
+		if err == nil && c.err == "" && got != c.out {
+			t.Errorf("%d) %q: expected %+v got %+v", i, c.in, c.out, got)
+		} else if err == nil && c.err != "" {
+			t.Errorf("%d) %q: expected error with susbtring %q got nil", i, c.in, c.err)
+		} else if err != nil && c.err == "" {
+			t.Errorf("%d) %q: unexpected error %s", i, c.in, err)
+		} else if err != nil && c.err != "" && !strings.Contains(err.Error(), c.err) {
+			t.Errorf("%d) %q: expected error with susbtring %q got %s", i, c.in, c.err, err)
+		}
+	}
+}
+
 type badWriter struct {
 	writeErr, closeErr error
 }

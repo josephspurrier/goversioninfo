@@ -10,6 +10,7 @@ import (
 	"log"
 	"os"
 	"reflect"
+	"regexp"
 	"strconv"
 	"strings"
 
@@ -134,6 +135,41 @@ func padString(s string, zeros int) []byte {
 
 func padBytes(i int) []byte {
 	return make([]byte, i)
+}
+
+// NewFileVersion parses semver version string into a FileVersion object
+func NewFileVersion(version string) (FileVersion, error) {
+	re := regexp.MustCompile(`^(\d+)\.(\d+)\.(\d+)(?:\.(\d+))?`)
+
+	comps := re.FindStringSubmatch(version)
+	if len(comps) == 0 {
+		return FileVersion{}, fmt.Errorf("version expected to start from x.y.z")
+	}
+
+	// First match group is a whole matched string.
+	comps = comps[1:]
+	if comps[3] == "" {
+		comps = comps[:3]
+	}
+
+	nums := make([]int, len(comps))
+	for i := range nums {
+		n, err := strconv.Atoi(comps[i])
+		if err != nil {
+			return FileVersion{}, fmt.Errorf("%s: %s", comps[i], err)
+		}
+		nums[i] = n
+	}
+
+	res := FileVersion{
+		Major: nums[0],
+		Minor: nums[1],
+		Patch: nums[2],
+	}
+	if len(nums) == 4 {
+		res.Build = nums[3]
+	}
+	return res, nil
 }
 
 func (f FileVersion) getVersionHighString() string {
