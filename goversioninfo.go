@@ -182,13 +182,11 @@ func (vi *VersionInfo) Walk() {
 // arch must be an architecture string accepted by coff.Arch, like "386" or "amd64"
 func (vi *VersionInfo) WriteSyso(filename string, arch string) error {
 
-	// Channel for generating IDs
-	newID := make(chan uint16)
-	go func() {
-		for i := uint16(1); ; i++ {
-			newID <- i
-		}
-	}()
+	var i uint16
+	newID := func() uint16 {
+		i++
+		return i
+	}
 
 	// Create a new RSRC section
 	rsrc := coff.NewRSRC()
@@ -211,7 +209,7 @@ func (vi *VersionInfo) WriteSyso(filename string, arch string) error {
 		}
 		defer manifest.Close()
 
-		id := <-newID
+		id := newID()
 		rsrc.AddResource(rtManifest, id, manifest)
 	}
 
