@@ -58,7 +58,7 @@ type gRPICONDIRENTRY struct {
 	ID uint16
 }
 
-func addIcon(coff *coff.Coff, fname string, newID <-chan uint16) error {
+func addIcon(coff *coff.Coff, fname string, newID func() uint16) error {
 	f, err := os.Open(fname)
 	if err != nil {
 		return err
@@ -77,9 +77,9 @@ func addIcon(coff *coff.Coff, fname string, newID <-chan uint16) error {
 			Type:     1, // magic num.
 			Count:    uint16(len(icons)),
 		}}
-		gid := <-newID
+		gid := newID()
 		for _, icon := range icons {
-			id := <-newID
+			id := newID()
 			buff, err := bufferIcon(f, int64(icon.ImageOffset), int(icon.BytesInRes))
 			if err != nil {
 				return err
