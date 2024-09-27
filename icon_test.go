@@ -1,7 +1,6 @@
 package goversioninfo
 
 import (
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -11,7 +10,7 @@ import (
 func TestIconReleaseFileHandle(t *testing.T) {
 	icoPath := "testdata/resource/icon.ico"
 	icoPath2 := "testdata/resource/icon2.ico"
-	tmpdir, err := ioutil.TempDir("", "resource")
+	tmpdir, err := os.MkdirTemp("", "resource")
 	if err != nil {
 		t.Error("Could not create temp dir", err)
 	}

@@ -6,7 +6,6 @@ import (
 	"flag"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"os"
 
@@ -81,7 +80,7 @@ func main() {
 		}
 
 		// Read the config file.
-		jsonBytes, err := ioutil.ReadAll(input)
+		jsonBytes, err := io.ReadAll(input)
 		input.Close()
 		if err != nil {
 			log.Printf("Error reading %q: %v", configFile, err)
