@@ -43,7 +43,7 @@ Complete list of the flags for goversioninfo:
   -description="": StringFileInfo.FileDescription
   -example=false: dump out an example versioninfo.json to stdout
   -file-version="": StringFileInfo.FileVersion
-  -icon="": icon file name
+  -icon="": icon file name(s), separated by commas
   -internal-name="": StringFileInfo.InternalName
   -manifest="": manifest file name
   -skip-versioninfo=false: skip version info reading on true, allows setting just icon
