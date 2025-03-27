@@ -9,8 +9,7 @@ jobs:
     # Run the job on these Go versions and operating systems.
     strategy:
       matrix:
-        #go-version: [1.18.x, 1.19.x, 1.20.x, 1.22.x, 1.23.x, 1.24.x]
-        go-version: [1.18.x]
+        go-version: [1.18.x, 1.23.x, 1.24.x]
         # os: [ubuntu-latest, macos-latest, windows-latest] # Don't use, spends a lot of cycles.
         os: [ubuntu-latest]
       # Don't cancel all jobs if one fails.
@@ -32,21 +31,7 @@ jobs:
       # Run all the unit tests.
       - name: Run all unit tests
         run: go test -v -race -covermode atomic -coverprofile=coverage.out ./...
-      # Install goveralls.
-      # - name: Install goveralls
-      #   env:
-      #     GO111MODULE: off
-      #   run: go get github.com/mattn/goveralls
-      # Send coverage to GitHub.
-      # - name: Send coverage
-      #   run: goveralls -coverprofile=covprofile -service=github
-      # - name: Coveralls
-      #   uses: coverallsapp/github-action@v2
-
-      # - name: Run tests and generate coverage
-      #   run: |
-      #     go test -v -covermode=count -coverprofile=coverage.out ./...
-
+      # Upload coverage.
       - name: Upload coverage to Coveralls
         uses: coverallsapp/github-action@v2
         with:
