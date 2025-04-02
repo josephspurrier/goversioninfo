@@ -1,0 +1,39 @@
+# Run this workflow every time a new commit or PR pushed to the repository.
+on: [push]
+# Name of the workflow. If this is blank, it will default to the path of the
+# file.
+name: Unit Tests
+jobs:
+  # Name of the job.
+  unit-tests:
+    # Run the job on these Go versions and operating systems.
+    strategy:
+      matrix:
+        go-version: [1.18.x, 1.23.x, 1.24.x]
+        # os: [ubuntu-latest, macos-latest, windows-latest] # Don't use, spends a lot of cycles.
+        os: [ubuntu-latest]
+      # Don't cancel all jobs if one fails.
+      fail-fast: false
+    runs-on: ${{ matrix.os }}
+    steps:
+      # Install Go.
+      - uses: actions/checkout@v4
+      - name: Setup Go ${{ matrix.go-version }}
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ matrix.go-version }}
+      # Checkout the code.
+      - name: Checkout code
+        uses: actions/checkout@v2
+      # Test on Windows.
+      - name: Run build tests.
+        run: bash testdata/bash/build.sh
+      # Run all the unit tests.
+      - name: Run all unit tests
+        run: go test -v -race -covermode atomic -coverprofile=coverage.out ./...
+      # Upload coverage.
+      - name: Upload coverage to Coveralls
+        uses: coverallsapp/github-action@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path-to-lcov: coverage.out
