@@ -3,6 +3,10 @@
 # Exit on error.
 set -e
 
+# Install the binary.
+set GOPATH=$GOPATH:$HOME/go/bin
+go build -o $HOME/go/bin/goversioninfo cmd/goversioninfo/main.go
+
 # Test Windows 32.
 cd testdata/example32
 GOOS=windows GOARCH=386 go generate

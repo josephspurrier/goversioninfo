@@ -1,7 +1,7 @@
 GoVersionInfo
 ==========
 
-[![Go Report Card](https://goreportcard.com/badge/github.com/josephspurrier/goversioninfo)](https://goreportcard.com/report/github.com/josephspurrier/goversioninfo) [![Build Status](https://travis-ci.org/josephspurrier/goversioninfo.svg)](https://travis-ci.org/josephspurrier/goversioninfo) [![Coverage Status](https://coveralls.io/repos/josephspurrier/goversioninfo/badge.svg)](https://coveralls.io/r/josephspurrier/goversioninfo) [![GoDoc](https://godoc.org/github.com/josephspurrier/goversioninfo?status.svg)](https://godoc.org/github.com/josephspurrier/goversioninfo)
+[![Go Report Card](https://goreportcard.com/badge/github.com/josephspurrier/goversioninfo)](https://goreportcard.com/report/github.com/josephspurrier/goversioninfo) [![Unit Tests](https://github.com/josephspurrier/goversioninfo/actions/workflows/unit-tests.yml/badge.svg)](https://github.com/josephspurrier/goversioninfo/actions/workflows/unit-tests.yml) [![Coverage Status](https://coveralls.io/repos/josephspurrier/goversioninfo/badge.svg)](https://coveralls.io/r/josephspurrier/goversioninfo) [![GoDoc](https://godoc.org/github.com/josephspurrier/goversioninfo?status.svg)](https://godoc.org/github.com/josephspurrier/goversioninfo)
 
 Microsoft Windows File Properties/Version Info and Icon Resource Generator for the Go Language
 
