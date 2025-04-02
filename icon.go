@@ -3,7 +3,9 @@ package goversioninfo
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
 	"os"
+	"strings"
 
 	"github.com/akavel/rsrc/coff"
 	"github.com/akavel/rsrc/ico"
@@ -58,7 +60,23 @@ type gRPICONDIRENTRY struct {
 	ID uint16
 }
 
-func addIcon(coff *coff.Coff, fname string, newID func() uint16) error {
+func addIcon(coff *coff.Coff, fnames string, newID func() uint16) error {
+	for {
+		var fname1 string
+		var ok bool
+		fname1, fnames, ok = strings.Cut(fnames, ",")
+		if fname1 != "" {
+			if err := addOneIcon(coff, fname1, newID); err != nil {
+				return fmt.Errorf("%s: %w", fname1, err)
+			}
+		}
+		if !ok {
+			return nil
+		}
+	}
+}
+
+func addOneIcon(coff *coff.Coff, fname string, newID func() uint16) error {
 	f, err := os.Open(fname)
 	if err != nil {
 		return err
