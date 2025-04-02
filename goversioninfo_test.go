@@ -3,7 +3,6 @@ package goversioninfo
 import (
 	"bytes"
 	"io"
-	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
@@ -29,7 +28,7 @@ func TestFile1(t *testing.T) {
 func testFile(t *testing.T, filename string) {
 	path, _ := filepath.Abs("./testdata/json/" + filename + ".json")
 
-	jsonBytes, err := ioutil.ReadFile(path)
+	jsonBytes, err := os.ReadFile(path)
 	assert.NoError(t, err)
 
 	// Create a new container
@@ -49,9 +48,9 @@ func testFile(t *testing.T, filename string) {
 
 	// This is for easily exporting results when the algorithm improves
 	/*path3, _ := filepath.Abs("./testdata/" + filename + ".out")
-	ioutil.WriteFile(path3, vi.Buffer.Bytes(), 0655)*/
+	os.WriteFile(path3, vi.Buffer.Bytes(), 0655)*/
 
-	expected, err := ioutil.ReadFile(path2)
+	expected, err := os.ReadFile(path2)
 	assert.NoError(t, err)
 
 	if !bytes.Equal(vi.Buffer.Bytes(), expected) {
@@ -59,18 +58,18 @@ func testFile(t *testing.T, filename string) {
 	}
 
 	// Test the Go file generation.
-	tmpdir, err := ioutil.TempDir("", "generate_go")
+	tmpdir, err := os.MkdirTemp("", "generate_go")
 	assert.NoError(t, err)
 	defer os.RemoveAll(tmpdir)
 	path4 := filepath.Join(tmpdir, filename+".go")
 	err = vi.WriteGo(path4, "")
 	assert.NoError(t, err)
 
-	gen, err := ioutil.ReadFile(path4)
+	gen, err := os.ReadFile(path4)
 	assert.NoError(t, err)
 
 	path5, _ := filepath.Abs("./testdata/gofile/" + filename + ".go")
-	expected5, err := ioutil.ReadFile(path5)
+	expected5, err := os.ReadFile(path5)
 	if err != nil {
 		t.Error("Could not load "+path5, err)
 	}
@@ -104,7 +103,7 @@ func doTestWrite(t *testing.T, arch string) {
 
 	path, _ := filepath.Abs("./testdata/json/" + filename + ".json")
 
-	jsonBytes, err := ioutil.ReadFile(path)
+	jsonBytes, err := os.ReadFile(path)
 	assert.NoError(t, err)
 
 	// Create a new container
@@ -120,7 +119,7 @@ func doTestWrite(t *testing.T, arch string) {
 	// Write the data to a buffer
 	vi.Walk()
 
-	tmpdir, err := ioutil.TempDir("", "resource")
+	tmpdir, err := os.MkdirTemp("", "resource")
 	assert.NoError(t, err)
 	defer os.RemoveAll(tmpdir)
 	file := filepath.Join(tmpdir, "resource.syso")
@@ -128,7 +127,7 @@ func doTestWrite(t *testing.T, arch string) {
 	err = vi.WriteSyso(file, arch)
 	assert.NoError(t, err)
 
-	_, err = ioutil.ReadFile(file)
+	_, err = os.ReadFile(file)
 	assert.NoError(t, err)
 }
 
@@ -137,7 +136,7 @@ func TestMalformedJSON(t *testing.T) {
 
 	path, _ := filepath.Abs("./testdata/json/" + filename + ".json")
 
-	jsonBytes, err := ioutil.ReadFile(path)
+	jsonBytes, err := os.ReadFile(path)
 	assert.NoError(t, err)
 
 	// Create a new container
@@ -154,7 +153,7 @@ func TestIcon(t *testing.T) {
 
 	path, _ := filepath.Abs("./testdata/json/" + filename + ".json")
 
-	jsonBytes, err := ioutil.ReadFile(path)
+	jsonBytes, err := os.ReadFile(path)
 	assert.NoError(t, err)
 
 	// Create a new container
@@ -173,7 +172,7 @@ func TestIcon(t *testing.T) {
 	// Write the data to a buffer
 	vi.Walk()
 
-	tmpdir, err := ioutil.TempDir("", "resource")
+	tmpdir, err := os.MkdirTemp("", "resource")
 	assert.NoError(t, err)
 	defer os.RemoveAll(tmpdir)
 	file := filepath.Join(tmpdir, "resource.syso")
@@ -181,7 +180,7 @@ func TestIcon(t *testing.T) {
 	err = vi.WriteSyso(file, "386")
 	assert.NoError(t, err)
 
-	_, err = ioutil.ReadFile(file)
+	_, err = os.ReadFile(file)
 	assert.NoError(t, err)
 }
 
@@ -190,7 +189,7 @@ func TestBadIcon(t *testing.T) {
 
 	path, _ := filepath.Abs("./testdata/json/" + filename + ".json")
 
-	jsonBytes, err := ioutil.ReadFile(path)
+	jsonBytes, err := os.ReadFile(path)
 	assert.NoError(t, err)
 
 	// Create a new container
@@ -209,7 +208,7 @@ func TestBadIcon(t *testing.T) {
 	// Write the data to a buffer
 	vi.Walk()
 
-	tmpdir, err := ioutil.TempDir("", "resource")
+	tmpdir, err := os.MkdirTemp("", "resource")
 	assert.NoError(t, err)
 	defer os.RemoveAll(tmpdir)
 	file := filepath.Join(tmpdir, "resource.syso")
@@ -219,7 +218,7 @@ func TestBadIcon(t *testing.T) {
 		t.Errorf("Error is missing because it should throw an error")
 	}
 
-	_, err = ioutil.ReadFile(file)
+	_, err = os.ReadFile(file)
 	if err == nil {
 		t.Error("File should not exist "+file, err)
 	}
@@ -230,7 +229,7 @@ func TestTimestamp(t *testing.T) {
 
 	path, _ := filepath.Abs("./testdata/json/" + filename + ".json")
 
-	jsonBytes, err := ioutil.ReadFile(path)
+	jsonBytes, err := os.ReadFile(path)
 	assert.NoError(t, err)
 
 	// Create a new container
@@ -249,7 +248,7 @@ func TestTimestamp(t *testing.T) {
 	// Write the data to a buffer
 	vi.Walk()
 
-	tmpdir, err := ioutil.TempDir("", "resource")
+	tmpdir, err := os.MkdirTemp("", "resource")
 	assert.NoError(t, err)
 	defer os.RemoveAll(tmpdir)
 	file := filepath.Join(tmpdir, "resource.syso")
@@ -257,7 +256,7 @@ func TestTimestamp(t *testing.T) {
 	err = vi.WriteSyso(file, "386")
 	assert.NoError(t, err)
 
-	_, err = ioutil.ReadFile(file)
+	_, err = os.ReadFile(file)
 	assert.NoError(t, err)
 }
 
@@ -266,7 +265,7 @@ func TestVersionString(t *testing.T) {
 
 	path, _ := filepath.Abs("./testdata/json/" + filename + ".json")
 
-	jsonBytes, err := ioutil.ReadFile(path)
+	jsonBytes, err := os.ReadFile(path)
 	assert.NoError(t, err)
 
 	// Create a new container
@@ -286,7 +285,7 @@ func TestWriteHex(t *testing.T) {
 
 	path, _ := filepath.Abs("./testdata/json/" + filename + ".json")
 
-	jsonBytes, err := ioutil.ReadFile(path)
+	jsonBytes, err := os.ReadFile(path)
 	assert.NoError(t, err)
 
 	// Create a new container
@@ -302,7 +301,7 @@ func TestWriteHex(t *testing.T) {
 	// Write the data to a buffer
 	vi.Walk()
 
-	tmpdir, err := ioutil.TempDir("", "resource")
+	tmpdir, err := os.MkdirTemp("", "resource")
 	assert.NoError(t, err)
 	defer os.RemoveAll(tmpdir)
 	file := filepath.Join(tmpdir, "resource.syso")
@@ -310,7 +309,7 @@ func TestWriteHex(t *testing.T) {
 	err = vi.WriteHex(file)
 	assert.NoError(t, err)
 
-	_, err = ioutil.ReadFile(file)
+	_, err = os.ReadFile(file)
 	assert.NoError(t, err)
 }
 
@@ -319,7 +318,7 @@ func testdatatr2Uint32(t *testing.T) {
 		in  string
 		out uint32
 	}{{"0", 0}, {"", 0}, {"FFEF", 65519}, {"\x00\x00", 0}} {
-		log.SetOutput(ioutil.Discard)
+		log.SetOutput(io.Discard)
 		got := str2Uint32(tt.in)
 		if got != tt.out {
 			t.Errorf("%q: awaited %d, got %d.", tt.in, tt.out, got)
@@ -358,7 +357,7 @@ func TestCharsetID(t *testing.T) {
 }
 
 func TestWriteCoff(t *testing.T) {
-	tempFh, err := ioutil.TempFile("", "goversioninfo-test-")
+	tempFh, err := os.CreateTemp("", "goversioninfo-test-")
 	if err != nil {
 		t.Fatalf("temp file: %v", err)
 	}

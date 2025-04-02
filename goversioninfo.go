@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"os"
 	"reflect"
@@ -228,7 +227,7 @@ func (vi *VersionInfo) WriteSyso(filename string, arch string) error {
 
 // WriteHex creates a hex file for debugging version info
 func (vi *VersionInfo) WriteHex(filename string) error {
-	return ioutil.WriteFile(filename, vi.Buffer.Bytes(), 0655)
+	return os.WriteFile(filename, vi.Buffer.Bytes(), 0655)
 }
 
 // WriteGo creates a Go file that contains the version info so you can access
