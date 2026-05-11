@@ -171,6 +171,22 @@ ProductPrivatePart = ProductVersion.Build
 
 If you find any other differences, let me know.
 
+## Unicode Characters in versioninfo.json
+
+The `versioninfo.json` file **must be saved as UTF-8**. If your editor saves it in
+a different encoding (such as Windows-1252, which is the default for some Windows
+text editors), non-ASCII characters like the copyright symbol `©` will appear as
+`?` or `�` in the compiled executable's file properties.
+
+This happens because Go reads the JSON file as UTF-8. A `©` saved as
+Windows-1252 is a single byte (`0xA9`), which is invalid UTF-8. Go replaces
+invalid bytes with the Unicode replacement character (`U+FFFD`), which Windows
+then displays as `?`.
+
+To fix this, either:
+- Save `versioninfo.json` as UTF-8 in your text editor, or
+- Use the JSON escape sequence `©` instead of the literal `©` character
+
 ## Alternatives to this Tool
 
 You can also use [windres](https://sourceware.org/binutils/docs/binutils/windres.html) to create the syso file. The windres executable is available in either [MinGW](http://www.mingw.org/) or [tdm-gcc](http://tdm-gcc.tdragon.net/).

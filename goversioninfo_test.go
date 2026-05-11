@@ -575,6 +575,68 @@ func TestFillVersions_MatchingVersionsNoWarning(t *testing.T) {
 	assert.Empty(t, buf.String())
 }
 
+func TestPadStringEmoji(t *testing.T) {
+	// U+1F600 (😀) requires a UTF-16 surrogate pair: 0xD83D 0xDE00
+	got := padString("😀", 0)
+	expected := []byte{0x3D, 0xD8, 0x00, 0xDE}
+	assert.Equal(t, expected, got)
+}
+
+func TestPadStringMixed(t *testing.T) {
+	// Mix of ASCII, non-ASCII BMP (©, U+00A9), and supplementary plane (😀, U+1F600)
+	got := padString("a©😀", 0)
+	expected := []byte{
+		0x61, 0x00, // 'a'
+		0xA9, 0x00, // '©'
+		0x3D, 0xD8, 0x00, 0xDE, // '😀'
+	}
+	assert.Equal(t, expected, got)
+}
+
+func TestCopyrightSymbolCharset(t *testing.T) {
+	copyright := "© 2024 Contoso Ltd."
+
+	// padString always produces UTF-16LE regardless of CharsetID.
+	encoded := padString(copyright, 0)
+	// First two bytes should be © (U+00A9) encoded as little-endian UTF-16.
+	assert.Equal(t, byte(0xA9), encoded[0], "low byte of © should be 0xA9")
+	assert.Equal(t, byte(0x00), encoded[1], "high byte of © should be 0x00")
+
+	// Build two resources with the same copyright string but different charsets.
+	build := func(charset CharsetID) []byte {
+		vi := &VersionInfo{}
+		vi.StringFileInfo.LegalCopyright = copyright
+		vi.VarFileInfo.Translation.LangID = LangID(0x0409)
+		vi.VarFileInfo.Translation.CharsetID = charset
+		vi.Build()
+		vi.Walk()
+		return vi.Buffer.Bytes()
+	}
+
+	correct := build(CsUnicode)  // 04B0 — matches the UTF-16LE encoding
+	wrong := build(Cs7ASCII)     // 0000 — declares 7-bit ASCII
+
+	// The copyright bytes are identical in both buffers because padString
+	// always writes UTF-16LE. The only difference is the Translation metadata
+	// that tells Windows how to interpret those bytes.
+	assert.Contains(t, string(correct), string(encoded),
+		"correct charset buffer should contain UTF-16LE copyright bytes")
+	assert.Contains(t, string(wrong), string(encoded),
+		"wrong charset buffer should also contain the same UTF-16LE copyright bytes")
+
+	// The buffers must differ — the Translation metadata is different.
+	assert.NotEqual(t, correct, wrong,
+		"buffers should differ because Translation charset metadata differs")
+
+	// Verify the translation strings reflect the charset choice.
+	correctTrans := Translation{LangID: 0x0409, CharsetID: CsUnicode}
+	wrongTrans := Translation{LangID: 0x0409, CharsetID: Cs7ASCII}
+	assert.Equal(t, "040904B0", correctTrans.getTranslationString(),
+		"correct translation should declare Unicode (04B0)")
+	assert.Equal(t, "04090000", wrongTrans.getTranslationString(),
+		"wrong translation declares 7-bit ASCII (0000) — Windows will show '?' for non-ASCII characters")
+}
+
 type badWriter struct {
 	writeErr, closeErr error
 }

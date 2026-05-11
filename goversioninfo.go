@@ -3,6 +3,7 @@ package goversioninfo
 
 import (
 	"bytes"
+	"encoding/binary"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -12,6 +13,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"unicode/utf16"
 
 	"github.com/akavel/rsrc/binutil"
 	"github.com/akavel/rsrc/coff"
@@ -113,17 +115,10 @@ func str2Uint32(s string) uint32 {
 }
 
 func padString(s string, zeros int) []byte {
-	b := make([]byte, 0, len([]rune(s))*2)
-	for _, x := range s {
-		tt := int32(x)
-
-		b = append(b, byte(tt))
-		if tt > 255 {
-			tt = tt >> 8
-			b = append(b, byte(tt))
-		} else {
-			b = append(b, byte(0))
-		}
+	u16 := utf16.Encode([]rune(s))
+	b := make([]byte, 0, len(u16)*2+zeros)
+	for _, v := range u16 {
+		b = binary.LittleEndian.AppendUint16(b, v)
 	}
 
 	for i := 0; i < zeros; i++ {
