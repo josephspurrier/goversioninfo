@@ -179,9 +179,52 @@ func (f FileVersion) getVersionLowString() string {
 	return fmt.Sprintf("%04x%04x", f.Patch, f.Build)
 }
 
+// IsZero returns true if all version components are zero.
+func (f FileVersion) IsZero() bool {
+	return f.Major == 0 && f.Minor == 0 && f.Patch == 0 && f.Build == 0
+}
+
 // GetVersionString returns a string representation of the version
 func (f FileVersion) GetVersionString() string {
 	return fmt.Sprintf("%d.%d.%d.%d", f.Major, f.Minor, f.Patch, f.Build)
+}
+
+// fillVersions syncs version info between FixedFileInfo and StringFileInfo.
+// If one section has version data and the other doesn't, the missing section
+// is populated automatically. Warnings are logged when StringFileInfo version
+// strings cannot be parsed or when the two sections have conflicting values.
+func (vi *VersionInfo) fillVersions() {
+	vi.fillVersion("FileVersion",
+		&vi.FixedFileInfo.FileVersion, &vi.StringFileInfo.FileVersion)
+	vi.fillVersion("ProductVersion",
+		&vi.FixedFileInfo.ProductVersion, &vi.StringFileInfo.ProductVersion)
+}
+
+func (vi *VersionInfo) fillVersion(name string, fixed *FileVersion, str *string) {
+	fixedZero := fixed.IsZero()
+	strEmpty := *str == ""
+
+	switch {
+	case !fixedZero && strEmpty:
+		*str = fixed.GetVersionString()
+	case fixedZero && !strEmpty:
+		v, err := NewFileVersion(*str)
+		if err != nil {
+			log.Printf("Warning: StringFileInfo.%s %q could not be parsed: %v", name, *str, err)
+			return
+		}
+		*fixed = v
+	case !fixedZero && !strEmpty:
+		v, err := NewFileVersion(*str)
+		if err != nil {
+			log.Printf("Warning: StringFileInfo.%s %q could not be parsed: %v", name, *str, err)
+			return
+		}
+		if *fixed != v {
+			log.Printf("Warning: FixedFileInfo.%s (%s) and StringFileInfo.%s (%s) do not match",
+				name, fixed.GetVersionString(), name, *str)
+		}
+	}
 }
 
 func (t Translation) getTranslationString() string {

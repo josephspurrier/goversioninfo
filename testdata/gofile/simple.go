@@ -37,7 +37,7 @@ var versionInfo = unmarshalGoVersionInfo([]byte(`{
 		"Comments": "",
 		"CompanyName": "",
 		"FileDescription": "",
-		"FileVersion": "",
+		"FileVersion": "1.0.0.0",
 		"InternalName": "",
 		"LegalCopyright": "",
 		"LegalTrademarks": "",

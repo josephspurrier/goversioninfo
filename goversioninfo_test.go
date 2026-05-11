@@ -416,6 +416,74 @@ func TestNewFileVersion(t *testing.T) {
 	}
 }
 
+func TestFillVersions_FixedToString(t *testing.T) {
+	vi := &VersionInfo{}
+	vi.FixedFileInfo.FileVersion = FileVersion{2, 0, 0, 0}
+	vi.FixedFileInfo.ProductVersion = FileVersion{3, 1, 0, 0}
+	vi.Build()
+	assert.Equal(t, "2.0.0.0", vi.StringFileInfo.FileVersion)
+	assert.Equal(t, "3.1.0.0", vi.StringFileInfo.ProductVersion)
+}
+
+func TestFillVersions_StringToFixed(t *testing.T) {
+	vi := &VersionInfo{}
+	vi.StringFileInfo.FileVersion = "2.0.0.0"
+	vi.StringFileInfo.ProductVersion = "3.1.4.1"
+	vi.Build()
+	assert.Equal(t, FileVersion{2, 0, 0, 0}, vi.FixedFileInfo.FileVersion)
+	assert.Equal(t, FileVersion{3, 1, 4, 1}, vi.FixedFileInfo.ProductVersion)
+}
+
+func TestFillVersions_BothPresent(t *testing.T) {
+	vi := &VersionInfo{}
+	vi.FixedFileInfo.FileVersion = FileVersion{1, 0, 0, 0}
+	vi.FixedFileInfo.ProductVersion = FileVersion{1, 0, 0, 0}
+	vi.StringFileInfo.FileVersion = "1.0.0.0 (custom build)"
+	vi.StringFileInfo.ProductVersion = "1.0"
+	vi.Build()
+	assert.Equal(t, "1.0.0.0 (custom build)", vi.StringFileInfo.FileVersion)
+	assert.Equal(t, "1.0", vi.StringFileInfo.ProductVersion)
+	assert.Equal(t, FileVersion{1, 0, 0, 0}, vi.FixedFileInfo.FileVersion)
+	assert.Equal(t, FileVersion{1, 0, 0, 0}, vi.FixedFileInfo.ProductVersion)
+}
+
+func TestFillVersions_InvalidStringVersion(t *testing.T) {
+	var buf bytes.Buffer
+	log.SetOutput(&buf)
+	defer log.SetOutput(os.Stderr)
+
+	vi := &VersionInfo{}
+	vi.StringFileInfo.FileVersion = "not-a-version"
+	vi.Build()
+	assert.Equal(t, FileVersion{0, 0, 0, 0}, vi.FixedFileInfo.FileVersion)
+	assert.Equal(t, "not-a-version", vi.StringFileInfo.FileVersion)
+	assert.Contains(t, buf.String(), "could not be parsed")
+}
+
+func TestFillVersions_Conflict(t *testing.T) {
+	var buf bytes.Buffer
+	log.SetOutput(&buf)
+	defer log.SetOutput(os.Stderr)
+
+	vi := &VersionInfo{}
+	vi.FixedFileInfo.FileVersion = FileVersion{2, 0, 0, 0}
+	vi.StringFileInfo.FileVersion = "3.0.0.0"
+	vi.Build()
+	assert.Contains(t, buf.String(), "do not match")
+}
+
+func TestFillVersions_MatchingVersionsNoWarning(t *testing.T) {
+	var buf bytes.Buffer
+	log.SetOutput(&buf)
+	defer log.SetOutput(os.Stderr)
+
+	vi := &VersionInfo{}
+	vi.FixedFileInfo.FileVersion = FileVersion{6, 3, 9600, 16384}
+	vi.StringFileInfo.FileVersion = "6.3.9600.16384 (winblue_rtm.130821-1623)"
+	vi.Build()
+	assert.Empty(t, buf.String())
+}
+
 type badWriter struct {
 	writeErr, closeErr error
 }

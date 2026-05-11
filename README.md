@@ -39,6 +39,46 @@ The `-64` and `-arm` flags default based on the `GOARCH` environment variable
 architecture without needing to pass `-64` or `-arm` explicitly. You can still
 override the defaults by passing the flags on the command line.
 
+## Version Synchronization
+
+The `FixedFileInfo` and `StringFileInfo` sections of the JSON config both contain
+`FileVersion` and `ProductVersion` fields. `FixedFileInfo` stores them as
+structured numeric components (`Major`, `Minor`, `Patch`, `Build`), while
+`StringFileInfo` stores them as free-form strings.
+
+When `Build()` is called, missing version fields are automatically filled in:
+
+- If `FixedFileInfo` has a version set but the corresponding `StringFileInfo`
+  string is empty, the string is generated (e.g., `"2.0.0.0"`).
+- If `StringFileInfo` has a parseable version string but the corresponding
+  `FixedFileInfo` fields are all zero, the struct is populated from the string.
+- If both are already set, neither is modified — but a warning is logged if the
+  numeric components do not match.
+- If a `StringFileInfo` version string cannot be parsed as a version number
+  (e.g., `x.y.z` or `x.y.z.w`), a warning is logged.
+
+This means you only need to specify version information in one place. For
+example, providing just `FixedFileInfo` is sufficient:
+
+```json
+{
+  "FixedFileInfo": {
+    "FileVersion": {
+      "Major": 2,
+      "Minor": 0,
+      "Patch": 0,
+      "Build": 0
+    },
+    "ProductVersion": {
+      "Major": 2,
+      "Minor": 0,
+      "Patch": 0,
+      "Build": 0
+    }
+  }
+}
+```
+
 ## Command-Line Flags
 
 Complete list of the flags for goversioninfo:

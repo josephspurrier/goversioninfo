@@ -293,6 +293,8 @@ func buildFixedFileInfo(vi *VersionInfo) VSFixedFileInfo {
 
 // Build fills the structs with data from the config file
 func (v *VersionInfo) Build() {
+	v.fillVersions()
+
 	vi := VSVersionInfo{}
 
 	// 0 for binary, 1 for text
