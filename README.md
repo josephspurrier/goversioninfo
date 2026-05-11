@@ -31,6 +31,14 @@ go generate
 go build
 ~~~
 
+## Architecture Detection
+
+The `-64` and `-arm` flags default based on the `GOARCH` environment variable
+(falling back to the host architecture if `GOARCH` is not set). This means
+`go generate` will automatically produce a resource file matching the target
+architecture without needing to pass `-64` or `-arm` explicitly. You can still
+override the defaults by passing the flags on the command line.
+
 ## Command-Line Flags
 
 Complete list of the flags for goversioninfo:

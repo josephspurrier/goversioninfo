@@ -8,6 +8,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"runtime"
 
 	"github.com/josephspurrier/goversioninfo"
 )
@@ -40,8 +41,12 @@ func main() {
 	flagTranslation := flag.Int("translation", 0, "translation ID")
 	flagCharset := flag.Int("charset", 0, "charset ID")
 
-	flag64 := flag.Bool("64", false, "generate 64-bit binaries")
-	flagarm := flag.Bool("arm", false, "generate arm binaries")
+	goarch := os.Getenv("GOARCH")
+	if goarch == "" {
+		goarch = runtime.GOARCH
+	}
+	flag64 := flag.Bool("64", goarch == "amd64" || goarch == "arm64", "generate 64-bit binaries")
+	flagarm := flag.Bool("arm", goarch == "arm" || goarch == "arm64", "generate arm binaries")
 
 	flagVerMajor := flag.Int("ver-major", -1, "FileVersion.Major")
 	flagVerMinor := flag.Int("ver-minor", -1, "FileVersion.Minor")
