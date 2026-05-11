@@ -15,7 +15,7 @@ Example of the file properties you can set using this package:
 
 To install, run the following command:
 ~~~
-go get github.com/josephspurrier/goversioninfo/cmd/goversioninfo
+go install github.com/josephspurrier/goversioninfo/cmd/goversioninfo@latest
 ~~~
 
 Copy testdata/resource/versioninfo.json into your working directory and then modify the file with your own settings.
