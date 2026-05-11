@@ -15,9 +15,12 @@ import (
 
 func main() {
 	flagExample := flag.Bool("example", false, "dump out an example versioninfo.json to stdout")
-	flagOut := flag.String("o", "resource.syso", "output file name")
+
+	cfg := goversioninfo.NewCLIConfig()
+
+	flagOut := flag.String("o", cfg.OutputFile, "output file name")
 	flagGo := flag.String("gofile", "", "Go output file name (optional)")
-	flagPackage := flag.String("gofilepackage", "main", "Go output package name (optional, requires parameter: 'gofile')")
+	flagPackage := flag.String("gofilepackage", cfg.GoFilePackage, "Go output package name (optional, requires parameter: 'gofile')")
 	flagPlatformSpecific := flag.Bool("platform-specific", false, "output i386, amd64, arm and arm64 named resource.syso, ignores -o")
 	flagIcon := flag.String("icon", "", "icon file name(s), separated by commas")
 	flagApplicationIcon := flag.String("application-icon", "", "icon file for IDI_APPLICATION (window title bar); defaults to -icon if unset")
@@ -64,195 +67,58 @@ func main() {
 		flag.PrintDefaults()
 	}
 	flag.Parse()
+
 	if *flagExample {
 		io.WriteString(os.Stdout, example)
 		return
 	}
 
-	configFile := flag.Arg(0)
-	if configFile == "" {
-		configFile = "versioninfo.json"
+	cfg.ConfigFile = flag.Arg(0)
+	if cfg.ConfigFile == "" {
+		cfg.ConfigFile = "versioninfo.json"
 	}
 
-	// Create a new container.
-	vi := &goversioninfo.VersionInfo{}
+	cfg.OutputFile = *flagOut
+	cfg.GoFile = *flagGo
+	cfg.GoFilePackage = *flagPackage
+	cfg.PlatformSpecific = *flagPlatformSpecific
+	cfg.IconPath = *flagIcon
+	cfg.ApplicationIconPath = *flagApplicationIcon
+	cfg.ManifestPath = *flagManifest
+	cfg.SkipVersionInfo = *flagSkipVersion
+	cfg.PropagateVerStrings = *flagPropagateVerStrings
 
-	if !*flagSkipVersion {
-		var err error
-		var input = io.ReadCloser(os.Stdin)
-		if configFile != "-" {
-			if input, err = os.Open(configFile); err != nil {
-				log.Printf("Cannot open %q: %v", configFile, err)
-				os.Exit(1)
-			}
-		}
+	cfg.Comment = *flagComment
+	cfg.CompanyName = *flagCompany
+	cfg.Description = *flagDescription
+	cfg.FileVersion = *flagFileVersion
+	cfg.InternalName = *flagInternalName
+	cfg.Copyright = *flagCopyright
+	cfg.Trademark = *flagTrademark
+	cfg.OriginalName = *flagOriginalName
+	cfg.PrivateBuild = *flagPrivateBuild
+	cfg.ProductName = *flagProductName
+	cfg.ProductVersion = *flagProductVersion
+	cfg.SpecialBuild = *flagSpecialBuild
 
-		// Read the config file.
-		jsonBytes, err := io.ReadAll(input)
-		input.Close()
-		if err != nil {
-			log.Printf("Error reading %q: %v", configFile, err)
-			os.Exit(1)
-		}
+	cfg.TranslationID = *flagTranslation
+	cfg.CharsetID = *flagCharset
 
-		// Parse the config.
-		if err := vi.ParseJSON(jsonBytes); err != nil {
-			log.Printf("Could not parse the .json file: %v", err)
-			os.Exit(2)
-		}
+	cfg.Is64Bit = *flag64
+	cfg.IsARM = *flagarm
 
-	}
+	cfg.VerMajor = *flagVerMajor
+	cfg.VerMinor = *flagVerMinor
+	cfg.VerPatch = *flagVerPatch
+	cfg.VerBuild = *flagVerBuild
 
-	// Override from flags.
-	if *flagIcon != "" {
-		vi.IconPath = *flagIcon
-	}
-	if *flagApplicationIcon != "" {
-		vi.ApplicationIconPath = *flagApplicationIcon
-	}
-	if *flagManifest != "" {
-		vi.ManifestPath = *flagManifest
-	}
-	if *flagComment != "" {
-		vi.StringFileInfo.Comments = *flagComment
-	}
-	if *flagCompany != "" {
-		vi.StringFileInfo.CompanyName = *flagCompany
-	}
-	if *flagDescription != "" {
-		vi.StringFileInfo.FileDescription = *flagDescription
-	}
-	if *flagFileVersion != "" {
-		vi.StringFileInfo.FileVersion = *flagFileVersion
-	}
-	if *flagInternalName != "" {
-		vi.StringFileInfo.InternalName = *flagInternalName
-	}
-	if *flagCopyright != "" {
-		vi.StringFileInfo.LegalCopyright = *flagCopyright
-	}
-	if *flagTrademark != "" {
-		vi.StringFileInfo.LegalTrademarks = *flagTrademark
-	}
-	if *flagOriginalName != "" {
-		vi.StringFileInfo.OriginalFilename = *flagOriginalName
-	}
-	if *flagPrivateBuild != "" {
-		vi.StringFileInfo.PrivateBuild = *flagPrivateBuild
-	}
-	if *flagProductName != "" {
-		vi.StringFileInfo.ProductName = *flagProductName
-	}
-	if *flagProductVersion != "" {
-		vi.StringFileInfo.ProductVersion = *flagProductVersion
-	}
-	if *flagSpecialBuild != "" {
-		vi.StringFileInfo.SpecialBuild = *flagSpecialBuild
-	}
+	cfg.ProductVerMajor = *flagProductVerMajor
+	cfg.ProductVerMinor = *flagProductVerMinor
+	cfg.ProductVerPatch = *flagProductVerPatch
+	cfg.ProductVerBuild = *flagProductVerBuild
 
-	if *flagTranslation > 0 {
-		vi.VarFileInfo.Translation.LangID = goversioninfo.LangID(*flagTranslation)
-	}
-	if *flagCharset > 0 {
-		vi.VarFileInfo.Translation.CharsetID = goversioninfo.CharsetID(*flagCharset)
-	}
-
-	// File Version flags.
-	if *flagVerMajor >= 0 {
-		vi.FixedFileInfo.FileVersion.Major = *flagVerMajor
-	}
-	if *flagVerMinor >= 0 {
-		vi.FixedFileInfo.FileVersion.Minor = *flagVerMinor
-	}
-	if *flagVerPatch >= 0 {
-		vi.FixedFileInfo.FileVersion.Patch = *flagVerPatch
-	}
-	if *flagVerBuild >= 0 {
-		vi.FixedFileInfo.FileVersion.Build = *flagVerBuild
-	}
-
-	// Product Version flags.
-	if *flagProductVerMajor >= 0 {
-		vi.FixedFileInfo.ProductVersion.Major = *flagProductVerMajor
-	}
-	if *flagProductVerMinor >= 0 {
-		vi.FixedFileInfo.ProductVersion.Minor = *flagProductVerMinor
-	}
-	if *flagProductVerPatch >= 0 {
-		vi.FixedFileInfo.ProductVersion.Patch = *flagProductVerPatch
-	}
-	if *flagProductVerBuild >= 0 {
-		vi.FixedFileInfo.ProductVersion.Build = *flagProductVerBuild
-	}
-
-	// Fill FixedFileInfo versions if needed.
-	if *flagPropagateVerStrings && vi.StringFileInfo.FileVersion != "" {
-		v, err := goversioninfo.NewFileVersion(vi.StringFileInfo.FileVersion)
-		if err != nil {
-			log.Printf("Unexpected StringFileInfo.FileVersion format: %v", err)
-			os.Exit(3)
-		}
-		vi.FixedFileInfo.FileVersion = v
-	}
-	if *flagPropagateVerStrings && vi.StringFileInfo.ProductVersion != "" {
-		v, err := goversioninfo.NewFileVersion(vi.StringFileInfo.ProductVersion)
-		if err != nil {
-			log.Printf("Unexpected StringFileInfo.ProductVersion format: %v", err)
-			os.Exit(3)
-		}
-		vi.FixedFileInfo.ProductVersion = v
-	}
-
-	// Fill the structures with config data.
-	vi.Build()
-
-	// Write the data to a buffer.
-	vi.Walk()
-
-	// If the flag is set, then generate the optional Go file.
-	if *flagGo != "" {
-		vi.WriteGo(*flagGo, *flagPackage)
-	}
-
-	// List of the architectures to output.
-	var archs []string
-
-	// If platform specific, then output all the architectures for Windows.
-	if flagPlatformSpecific != nil && *flagPlatformSpecific {
-		archs = []string{"386", "amd64", "arm", "arm64"}
-	} else {
-		// Set the architecture, defaulted to 386(32-bit x86).
-		archs = []string{"386"} // 386(32-bit x86)
-		if flagarm != nil && *flagarm {
-			if flag64 != nil && *flag64 {
-				archs = []string{"arm64"} // arm64(64-bit arm64)
-			} else {
-				archs = []string{"arm"} // arm(32-bit arm)
-			}
-		} else {
-			if flag64 != nil && *flag64 {
-				archs = []string{"amd64"} // amd64(64-bit x86_64)
-			}
-		}
-
-	}
-
-	// Loop through each artchitecture.
-	for _, item := range archs {
-		// Create the file using the -o argument.
-		fileout := *flagOut
-
-		// If the number of architectures is greater than one, then don't use
-		// the -o argument.
-		if len(archs) > 1 {
-			fileout = fmt.Sprintf("resource_windows_%v.syso", item)
-		}
-
-		// Create the file for the specified architecture.
-		if err := vi.WriteSyso(fileout, item); err != nil {
-			log.Printf("Error writing syso: %v", err)
-			os.Exit(3)
-		}
+	if err := goversioninfo.RunCLI(cfg); err != nil {
+		log.Fatal(err)
 	}
 }
 
