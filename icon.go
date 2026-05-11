@@ -77,6 +77,14 @@ func addIcon(coff *coff.Coff, fnames string, newID func() uint16) error {
 }
 
 func addOneIcon(coff *coff.Coff, fname string, newID func() uint16) error {
+	return addOneIconWithGroupID(coff, fname, newID, 0)
+}
+
+func addIconWithGroupID(coff *coff.Coff, fname string, newID func() uint16, groupID uint16) error {
+	return addOneIconWithGroupID(coff, fname, newID, groupID)
+}
+
+func addOneIconWithGroupID(coff *coff.Coff, fname string, newID func() uint16, groupID uint16) error {
 	f, err := os.Open(fname)
 	if err != nil {
 		return err
@@ -95,7 +103,10 @@ func addOneIcon(coff *coff.Coff, fname string, newID func() uint16) error {
 			Type:     1, // magic num.
 			Count:    uint16(len(icons)),
 		}}
-		gid := newID()
+		gid := groupID
+		if gid == 0 {
+			gid = newID()
+		}
 		for _, icon := range icons {
 			id := newID()
 			buff, err := bufferIcon(f, int64(icon.ImageOffset), int(icon.BytesInRes))

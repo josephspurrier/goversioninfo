@@ -34,8 +34,9 @@ type VersionInfo struct {
 	Timestamp      bool
 	Buffer         bytes.Buffer
 	Structure      VSVersionInfo
-	IconPath       string `json:"IconPath"`
-	ManifestPath   string `json:"ManifestPath"`
+	IconPath            string `json:"IconPath"`
+	ManifestPath        string `json:"ManifestPath"`
+	ApplicationIconPath string `json:"ApplicationIconPath"`
 }
 
 // Translation with langid and charsetid.
@@ -294,6 +295,18 @@ func (vi *VersionInfo) WriteSyso(filename string, arch string) error {
 	// If icon is enabled
 	if vi.IconPath != "" {
 		if err := addIcon(rsrc, vi.IconPath, newID); err != nil {
+			return err
+		}
+	}
+
+	// IDI_APPLICATION (32512) is the icon shown in the window title bar.
+	// Default to IconPath if not explicitly set.
+	appIcon := vi.ApplicationIconPath
+	if appIcon == "" {
+		appIcon = vi.IconPath
+	}
+	if appIcon != "" {
+		if err := addIconWithGroupID(rsrc, appIcon, newID, 32512); err != nil {
 			return err
 		}
 	}

@@ -79,6 +79,33 @@ example, providing just `FixedFileInfo` is sufficient:
 }
 ```
 
+## Application Icon (Window Title Bar)
+
+By default, Windows uses the system default icon for the window title bar. To
+set a custom window icon, goversioninfo embeds an icon resource with the
+`IDI_APPLICATION` resource ID (32512). This is the icon that Win32 applications
+load via `LoadIcon(hInstance, IDI_APPLICATION)`.
+
+When `IconPath` is set and `ApplicationIconPath` is not, the application icon
+defaults to the same file as `IconPath`. To use a different icon for the window
+title bar, set `ApplicationIconPath` explicitly:
+
+```json
+{
+    "IconPath": "icons/main.ico",
+    "ApplicationIconPath": "icons/small.ico"
+}
+```
+
+You can also set it via the command line:
+
+~~~
+goversioninfo -icon=icons/main.ico -application-icon=icons/small.ico
+~~~
+
+If neither `IconPath` nor `ApplicationIconPath` is set, no application icon is
+embedded.
+
 ## Command-Line Flags
 
 Complete list of the flags for goversioninfo:
@@ -92,6 +119,7 @@ Complete list of the flags for goversioninfo:
   -example=false: dump out an example versioninfo.json to stdout
   -file-version="": StringFileInfo.FileVersion
   -icon="": icon file name(s), separated by commas
+  -application-icon="": icon file for IDI_APPLICATION (window title bar); defaults to -icon if unset
   -internal-name="": StringFileInfo.InternalName
   -manifest="": manifest file name
   -skip-versioninfo=false: skip version info reading on true, allows setting just icon

@@ -20,6 +20,7 @@ func main() {
 	flagPackage := flag.String("gofilepackage", "main", "Go output package name (optional, requires parameter: 'gofile')")
 	flagPlatformSpecific := flag.Bool("platform-specific", false, "output i386, amd64, arm and arm64 named resource.syso, ignores -o")
 	flagIcon := flag.String("icon", "", "icon file name(s), separated by commas")
+	flagApplicationIcon := flag.String("application-icon", "", "icon file for IDI_APPLICATION (window title bar); defaults to -icon if unset")
 	flagManifest := flag.String("manifest", "", "manifest file name")
 	flagSkipVersion := flag.Bool("skip-versioninfo", false, "skip version info")
 	flagPropagateVerStrings := flag.Bool("propagate-ver-strings", false,
@@ -105,6 +106,9 @@ func main() {
 	// Override from flags.
 	if *flagIcon != "" {
 		vi.IconPath = *flagIcon
+	}
+	if *flagApplicationIcon != "" {
+		vi.ApplicationIconPath = *flagApplicationIcon
 	}
 	if *flagManifest != "" {
 		vi.ManifestPath = *flagManifest

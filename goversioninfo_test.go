@@ -224,6 +224,97 @@ func TestBadIcon(t *testing.T) {
 	}
 }
 
+func TestApplicationIconDefault(t *testing.T) {
+	filename := "cmd"
+
+	path, _ := filepath.Abs("./testdata/json/" + filename + ".json")
+
+	jsonBytes, err := os.ReadFile(path)
+	assert.NoError(t, err)
+
+	vi := &VersionInfo{}
+
+	if err := vi.ParseJSON(jsonBytes); err != nil {
+		t.Error("Could not parse "+filename+".json", err)
+	}
+
+	vi.IconPath = "testdata/resource/icon.ico"
+
+	vi.Build()
+	vi.Walk()
+
+	tmpdir, err := os.MkdirTemp("", "resource")
+	assert.NoError(t, err)
+	defer os.RemoveAll(tmpdir)
+	file := filepath.Join(tmpdir, "resource.syso")
+
+	err = vi.WriteSyso(file, "386")
+	assert.NoError(t, err)
+
+	_, err = os.ReadFile(file)
+	assert.NoError(t, err)
+}
+
+func TestApplicationIconExplicit(t *testing.T) {
+	filename := "cmd"
+
+	path, _ := filepath.Abs("./testdata/json/" + filename + ".json")
+
+	jsonBytes, err := os.ReadFile(path)
+	assert.NoError(t, err)
+
+	vi := &VersionInfo{}
+
+	if err := vi.ParseJSON(jsonBytes); err != nil {
+		t.Error("Could not parse "+filename+".json", err)
+	}
+
+	vi.IconPath = "testdata/resource/icon.ico"
+	vi.ApplicationIconPath = "testdata/resource/icon.ico"
+
+	vi.Build()
+	vi.Walk()
+
+	tmpdir, err := os.MkdirTemp("", "resource")
+	assert.NoError(t, err)
+	defer os.RemoveAll(tmpdir)
+	file := filepath.Join(tmpdir, "resource.syso")
+
+	err = vi.WriteSyso(file, "386")
+	assert.NoError(t, err)
+
+	_, err = os.ReadFile(file)
+	assert.NoError(t, err)
+}
+
+func TestBadApplicationIcon(t *testing.T) {
+	filename := "cmd"
+
+	path, _ := filepath.Abs("./testdata/json/" + filename + ".json")
+
+	jsonBytes, err := os.ReadFile(path)
+	assert.NoError(t, err)
+
+	vi := &VersionInfo{}
+
+	if err := vi.ParseJSON(jsonBytes); err != nil {
+		t.Error("Could not parse "+filename+".json", err)
+	}
+
+	vi.ApplicationIconPath = "nonexistent.ico"
+
+	vi.Build()
+	vi.Walk()
+
+	tmpdir, err := os.MkdirTemp("", "resource")
+	assert.NoError(t, err)
+	defer os.RemoveAll(tmpdir)
+	file := filepath.Join(tmpdir, "resource.syso")
+
+	err = vi.WriteSyso(file, "386")
+	assert.Error(t, err)
+}
+
 func TestTimestamp(t *testing.T) {
 	filename := "cmd"
 
