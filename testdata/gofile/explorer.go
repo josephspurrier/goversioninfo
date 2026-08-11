@@ -28,7 +28,7 @@ var versionInfo = unmarshalGoVersionInfo([]byte(`{
 			"Build": 17284
 		},
 		"FileFlagsMask": "3f",
-		"FileFlags": "",
+		"FileFlags": "00",
 		"FileOS": "040004",
 		"FileType": "01",
 		"FileSubType": "00"
