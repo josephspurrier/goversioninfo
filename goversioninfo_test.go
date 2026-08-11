@@ -2,6 +2,8 @@ package goversioninfo
 
 import (
 	"bytes"
+	"debug/pe"
+	"encoding/binary"
 	"io"
 	"log"
 	"os"
@@ -146,6 +148,121 @@ func TestMalformedJSON(t *testing.T) {
 	if err := vi.ParseJSON(jsonBytes); err == nil {
 		t.Error("Application was supposed to return error, got nil")
 	}
+}
+
+// TestSysoResourceAlignment guards against a regression of
+// https://github.com/josephspurrier/goversioninfo/issues/39. Every resource in
+// the .rsrc section must start on an 8 byte boundary. When it does not, the
+// binutils linker used by mingw-w64 rejects the object file while merging
+// resources with ".rsrc merge failure: corrupt .rsrc section". Odd sized
+// resources such as an icon group (6+14*n bytes) are what push the following
+// resources out of alignment, so the fixture below uses a multi image icon.
+func TestSysoResourceAlignment(t *testing.T) {
+	path, _ := filepath.Abs("./testdata/json/cmd.json")
+
+	jsonBytes, err := os.ReadFile(path)
+	assert.NoError(t, err)
+
+	vi := &VersionInfo{}
+	if err := vi.ParseJSON(jsonBytes); err != nil {
+		t.Fatal("Could not parse cmd.json", err)
+	}
+
+	vi.IconPath = "testdata/resource/icon.ico"
+	vi.ManifestPath = "testdata/resource/goversioninfo.exe.manifest"
+
+	vi.Build()
+	vi.Walk()
+
+	for _, arch := range []string{"386", "amd64", "arm", "arm64"} {
+		t.Run(arch, func(t *testing.T) {
+			tmpdir, err := os.MkdirTemp("", "alignment")
+			assert.NoError(t, err)
+			defer os.RemoveAll(tmpdir)
+
+			file := filepath.Join(tmpdir, "resource.syso")
+			assert.NoError(t, vi.WriteSyso(file, arch))
+
+			f, err := pe.Open(file)
+			if err != nil {
+				t.Fatal("Could not open the generated .syso", err)
+			}
+			defer f.Close()
+
+			section := f.Section(".rsrc")
+			if section == nil {
+				t.Fatal("Generated .syso has no .rsrc section")
+			}
+			data, err := section.Data()
+			assert.NoError(t, err)
+
+			for _, leaf := range resourceLeaves(t, data, section.VirtualAddress) {
+				if leaf%8 != 0 {
+					t.Errorf("resource at %#x is not 8 byte aligned (offset mod 8 = %d)", leaf, leaf%8)
+				}
+			}
+
+			// The offsets recorded in the headers must agree with what was
+			// actually written, otherwise the padding was accounted for during
+			// Freeze but left out of the file (or the other way around).
+			if got, want := section.Offset+section.Size, section.PointerToRelocations; got != want {
+				t.Errorf("raw data ends at %#x, relocations start at %#x", got, want)
+			}
+			relocationsEnd := section.PointerToRelocations + uint32(section.NumberOfRelocations)*10
+			if got, want := relocationsEnd, f.FileHeader.PointerToSymbolTable; got != want {
+				t.Errorf("relocations end at %#x, symbol table starts at %#x", got, want)
+			}
+		})
+	}
+}
+
+// resourceLeaves walks the resource directory tree in the raw .rsrc data and
+// returns the section relative offset of every resource's data.
+func resourceLeaves(t *testing.T, data []byte, virtualAddress uint32) []uint32 {
+	t.Helper()
+
+	var offsets []uint32
+
+	// read returns the little endian uint32 at off, failing the test when the
+	// generated file is too short to hold it.
+	read := func(off uint32) uint32 {
+		if uint64(off)+4 > uint64(len(data)) {
+			t.Fatalf("offset %#x is outside the %d byte .rsrc section", off, len(data))
+		}
+		return binary.LittleEndian.Uint32(data[off:])
+	}
+
+	// The tree is type -> ID -> language, so it is never deeper than 3 levels.
+	var walk func(dirOffset uint32, depth int)
+	walk = func(dirOffset uint32, depth int) {
+		if depth > 3 {
+			t.Fatalf("resource directory nested more than 3 levels deep at %#x", dirOffset)
+		}
+
+		// The entry count is the last uint32 of the 16 byte directory header:
+		// the named entry count followed by the ID entry count.
+		counts := read(dirOffset + 12)
+		total := (counts & 0xffff) + (counts >> 16)
+
+		for i := uint32(0); i < total; i++ {
+			entry := dirOffset + 16 + i*8
+			offsetToData := read(entry + 4)
+			if offsetToData&0x80000000 != 0 {
+				walk(offsetToData&0x7fffffff, depth+1)
+				continue
+			}
+			// A leaf points at an IMAGE_RESOURCE_DATA_ENTRY, whose first field
+			// is the RVA of the resource itself.
+			offsets = append(offsets, read(offsetToData)-virtualAddress)
+		}
+	}
+	walk(0, 1)
+
+	if len(offsets) == 0 {
+		t.Fatal("Found no resources in the .rsrc section")
+	}
+
+	return offsets
 }
 
 func TestIcon(t *testing.T) {
@@ -404,7 +521,7 @@ func TestWriteHex(t *testing.T) {
 	assert.NoError(t, err)
 }
 
-func testdatatr2Uint32(t *testing.T) {
+func TestStr2Uint32(t *testing.T) {
 	for _, tt := range []struct {
 		in  string
 		out uint32
@@ -613,8 +730,8 @@ func TestCopyrightSymbolCharset(t *testing.T) {
 		return vi.Buffer.Bytes()
 	}
 
-	correct := build(CsUnicode)  // 04B0 — matches the UTF-16LE encoding
-	wrong := build(Cs7ASCII)     // 0000 — declares 7-bit ASCII
+	correct := build(CsUnicode) // 04B0 — matches the UTF-16LE encoding
+	wrong := build(Cs7ASCII)    // 0000 — declares 7-bit ASCII
 
 	// The copyright bytes are identical in both buffers because padString
 	// always writes UTF-16LE. The only difference is the Translation metadata

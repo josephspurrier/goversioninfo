@@ -30,12 +30,12 @@ func (vi *VersionInfo) ParseJSON(jsonBytes []byte) error {
 
 // VersionInfo data container
 type VersionInfo struct {
-	FixedFileInfo  `json:"FixedFileInfo"`
-	StringFileInfo `json:"StringFileInfo"`
-	VarFileInfo    `json:"VarFileInfo"`
-	Timestamp      bool
-	Buffer         bytes.Buffer
-	Structure      VSVersionInfo
+	FixedFileInfo       `json:"FixedFileInfo"`
+	StringFileInfo      `json:"StringFileInfo"`
+	VarFileInfo         `json:"VarFileInfo"`
+	Timestamp           bool
+	Buffer              bytes.Buffer
+	Structure           VSVersionInfo
 	IconPath            string `json:"IconPath"`
 	ManifestPath        string `json:"ManifestPath"`
 	ApplicationIconPath string `json:"ApplicationIconPath"`
